@@ -122,7 +122,8 @@ Si se quiere que el APK traiga la URL por defecto, cambiar `DEFAULT_URL` en
 
 ## 6. Estado actual
 
-- **Vercel:** desplegado en https://ruta-rides.vercel.app (login verificado).
+- **GitHub:** https://github.com/Rich-Avlis/ruta-rides (privado).
+- **Vercel:** https://ruta-rides.vercel.app (login verificado, conectado al repo).
 - **Backend:** temporalmente en túnel Cloudflare; Render pendiente de cuenta/API key.
 - **GitHub:** repositorio aún no creado.
 - **APK:** apunta a Vercel.
