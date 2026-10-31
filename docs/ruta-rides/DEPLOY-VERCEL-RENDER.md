@@ -122,18 +122,17 @@ Si se quiere que el APK traiga la URL por defecto, cambiar `DEFAULT_URL` en
 
 ## 6. Estado actual
 
-- **GitHub:** https://github.com/Rich-Avlis/ruta-rides (privado).
-- **Vercel:** https://ruta-rides.vercel.app (login verificado, conectado al repo).
-- **Backend:** temporalmente en túnel Cloudflare; Render pendiente de cuenta/API key.
-- **GitHub:** repositorio aún no creado.
-- **APK:** apunta a Vercel.
+- **GitHub:** https://github.com/Rich-Avlis/ruta-rides (público; sin `.env`).
+- **Vercel:** https://ruta-rides.vercel.app — conectado al repo, deploy automático.
+- **Backend:** https://ruta-rides-api.onrender.com — plan gratuito, health OK.
+- **APK:** `/Users/richardsilva/Downloads/RUTA-RIDES-debug.apk`, abre Vercel.
+- **Deploy backend:** GitHub Actions (`.github/workflows/deploy-backend.yml`)
+  llama a la API de Render con los secrets `RENDER_API_KEY` y
+  `RENDER_SERVICE_ID`. El auto-deploy nativo quedó desactivado.
 
-No se pudo ejecutar el despliegue desde esta máquina porque no hay:
+### Pendiente para producción
 
-- remoto de GitHub,
-- `gh` autenticado,
-- token de Vercel,
-- API key de Render.
-
-Los archivos `render.yaml` y `vercel.json` están listos. Con acceso a las cuentas
-se completa en minutos.
+- Plan con disco (`starter`) o PostgreSQL para conservar datos.
+- Repo privado: reinstalar la GitHub App de Render desde el dashboard para que
+  pueda clonar en privado.
+- Sustituir Nominatim/OSRM públicos y montar backups.

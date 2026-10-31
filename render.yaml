@@ -2,20 +2,19 @@ services:
   - type: web
     name: ruta-rides-api
     runtime: node
-    plan: starter
+    plan: free
     rootDir: backend
     buildCommand: npm install
     startCommand: node scripts/create-admin.js && node server.js
     healthCheckPath: /health
+    autoDeploy: false
     envVars:
       - key: NODE_VERSION
-        value: 22.23.3
+        value: 20.19.0
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
         value: 7d
-      - key: DB_PATH
-        value: /var/data/database.sqlite
       - key: CORS_ORIGINS
         sync: false
       - key: ADMIN_EMAIL
@@ -36,7 +35,7 @@ services:
         value: https://router.project-osrm.org
       - key: EXCHANGE_RATE_URL
         value: https://ve.dolarapi.com/v1/dolares/oficial
-    disk:
-      name: ruta-data
-      mountPath: /var/data
-      sizeGB: 1
+    # Plan gratuito: sin disco. La base SQLite es efímera y se recrea con los
+    # datos iniciales en cada arranque. Para persistir, usar plan starter y:
+    #   env DB_PATH=/var/data/database.sqlite
+    #   disk: name ruta-data, mountPath /var/data, sizeGB 1
