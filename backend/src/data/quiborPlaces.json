@@ -1,0 +1,346 @@
+[
+  {
+    "nombre": "Alcaldía del Municipio Jiménez",
+    "categoria": "ALCALDIA",
+    "direccion": "Alcaldía del Municipio Jiménez, Calle 11, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.924933,
+    "lng": -69.620699,
+    "osmId": "node:6528174071"
+  },
+  {
+    "nombre": "Banco Agrícola V",
+    "categoria": "BANCO",
+    "direccion": "Banco Agrícola V, Avenida Florencio Jiménez, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.928145,
+    "lng": -69.612602,
+    "osmId": "node:6537601870"
+  },
+  {
+    "nombre": "Banco Bicentenario",
+    "categoria": "BANCO",
+    "direccion": "Banco Bicentenario, Avenida Florencio Jiménez, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.925498,
+    "lng": -69.616689,
+    "osmId": "node:6537578782"
+  },
+  {
+    "nombre": "Banco Bicentenario",
+    "categoria": "BANCO",
+    "direccion": "Banco Bicentenario, Avenida Florencio Jiménez, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.928915,
+    "lng": -69.610811,
+    "osmId": "node:6524963087"
+  },
+  {
+    "nombre": "Banco BOD",
+    "categoria": "BANCO",
+    "direccion": "Banco BOD, Calle 9, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.924786,
+    "lng": -69.619699,
+    "osmId": "node:6524945212"
+  },
+  {
+    "nombre": "Banco de Venezuela",
+    "categoria": "BANCO",
+    "direccion": "Banco de Venezuela, Avenida 6, Urbanización Playa Bonita, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 6031, Venezuela",
+    "lat": 9.924981,
+    "lng": -69.618947,
+    "osmId": "node:6524962846"
+  },
+  {
+    "nombre": "BBVA Provincial",
+    "categoria": "BANCO",
+    "direccion": "BBVA Provincial, Avenida Florencio Jiménez, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.925525,
+    "lng": -69.616909,
+    "osmId": "node:6524938771"
+  },
+  {
+    "nombre": "Mercantil",
+    "categoria": "BANCO",
+    "direccion": "Mercantil, Avenida Pedro Leon Torres, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.928537,
+    "lng": -69.623221,
+    "osmId": "node:6537587076"
+  },
+  {
+    "nombre": "E/S El Trebol",
+    "categoria": "COMBUSTIBLE",
+    "direccion": "E/S El Trebol, Avenida Perimetral Sur, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.913135,
+    "lng": -69.621978,
+    "osmId": "node:6591800116"
+  },
+  {
+    "nombre": "E/S La Ceibita",
+    "categoria": "COMBUSTIBLE",
+    "direccion": "E/S La Ceibita, Avenida Florencio Jiménez, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.927825,
+    "lng": -69.612004,
+    "osmId": "node:6530727280"
+  },
+  {
+    "nombre": "Shell",
+    "categoria": "COMBUSTIBLE",
+    "direccion": "Shell, Carretera Quibor - Cubiro, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.923504,
+    "lng": -69.612162,
+    "osmId": "node:6537542568"
+  },
+  {
+    "nombre": "Colegio Virgen de Altagracia",
+    "categoria": "EDUCACION",
+    "direccion": "Colegio Virgen de Altagracia, Calle 8, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.92184,
+    "lng": -69.618549,
+    "osmId": "node:6537607202"
+  },
+  {
+    "nombre": "INCE Quibor",
+    "categoria": "EDUCACION",
+    "direccion": "INCE Quibor, Calle 8, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.922062,
+    "lng": -69.617938,
+    "osmId": "node:6537605649"
+  },
+  {
+    "nombre": "Unidad Educativa Nacional Campo Lindo",
+    "categoria": "EDUCACION",
+    "direccion": "Unidad Educativa Nacional Campo Lindo, Avenida Florencio Jiménez, Carabujano, Campo Lindo, Parroquia Tintorero, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.957803,
+    "lng": -69.570479,
+    "osmId": "node:10930190187"
+  },
+  {
+    "nombre": "Farmacia la Ideal",
+    "categoria": "FARMACIA",
+    "direccion": "Farmacia la Ideal, Avenida 9, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.925904,
+    "lng": -69.625184,
+    "osmId": "node:6537589440"
+  },
+  {
+    "nombre": "Farmacia Plena Vida",
+    "categoria": "FARMACIA",
+    "direccion": "Farmacia Plena Vida, Avenida 12, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.930649,
+    "lng": -69.622294,
+    "osmId": "node:6534076924"
+  },
+  {
+    "nombre": "Farmacia Plena Vida II",
+    "categoria": "FARMACIA",
+    "direccion": "Farmacia Plena Vida II, Calle Lara, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.935003,
+    "lng": -69.628172,
+    "osmId": "node:6534077016"
+  },
+  {
+    "nombre": "Farmacia San Ignacio de Loyola II",
+    "categoria": "FARMACIA",
+    "direccion": "Farmacia San Ignacio de Loyola II, Calle Lara, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.924862,
+    "lng": -69.62345,
+    "osmId": "node:11523696618"
+  },
+  {
+    "nombre": "Multifarma 07",
+    "categoria": "FARMACIA",
+    "direccion": "Multifarma 07, Carretera Quibor - Cubiro, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.924927,
+    "lng": -69.612824,
+    "osmId": "node:11523696629"
+  },
+  {
+    "nombre": "SAAS",
+    "categoria": "FARMACIA",
+    "direccion": "SAAS, Calle Lara, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.930079,
+    "lng": -69.625966,
+    "osmId": "node:6258687085"
+  },
+  {
+    "nombre": "Hielo Wiscog",
+    "categoria": "LICORERIA",
+    "direccion": "Hielo Wiscog, Calle 8, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.933648,
+    "lng": -69.62123,
+    "osmId": "node:4245443989"
+  },
+  {
+    "nombre": "Licorería Los Albertos",
+    "categoria": "LICORERIA",
+    "direccion": "Licorería Los Albertos, Avenida 10, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.927558,
+    "lng": -69.623547,
+    "osmId": "node:4245444189"
+  },
+  {
+    "nombre": "Mercado Artesanal La Tinaja",
+    "categoria": "MERCADO",
+    "direccion": "Mercado Artesanal La Tinaja, Avenida Perimetral Sur, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.915684,
+    "lng": -69.607252,
+    "osmId": "way:344106702"
+  },
+  {
+    "nombre": "Museo Arqueológico de Quibor",
+    "categoria": "MUSEO",
+    "direccion": "Museo Arqueológico de Quibor, Avenida Pedro Leon Torres, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.928788,
+    "lng": -69.622758,
+    "osmId": "node:6537598818"
+  },
+  {
+    "nombre": "Parque del Museo Antropológico de Quíbor",
+    "categoria": "MUSEO",
+    "direccion": "parque del museo antropologico de quibor, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, Venezuela",
+    "lat": 9.928322,
+    "lng": -69.622411,
+    "osmId": "way:833686235"
+  },
+  {
+    "nombre": "Panadería Cristal",
+    "categoria": "PANADERIA",
+    "direccion": "Panadería Cristal, Calle 11, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.92369,
+    "lng": -69.620857,
+    "osmId": "node:6528202569"
+  },
+  {
+    "nombre": "Panadería La Piolín",
+    "categoria": "PANADERIA",
+    "direccion": "Panadería La Piolín, Carretera Quibor - Cubiro, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.926955,
+    "lng": -69.613114,
+    "osmId": "node:6524966196"
+  },
+  {
+    "nombre": "Panadería Mansión Eurolatina",
+    "categoria": "PANADERIA",
+    "direccion": "Panadería Mansión Eurolatina, Calle 11, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.924163,
+    "lng": -69.620956,
+    "osmId": "node:6528207420"
+  },
+  {
+    "nombre": "Parque San Rafael",
+    "categoria": "PARQUE",
+    "direccion": "Parque San Rafael, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, Venezuela",
+    "lat": 9.930552,
+    "lng": -69.621635,
+    "osmId": "way:833686233"
+  },
+  {
+    "nombre": "Plaza Bolívar",
+    "categoria": "PLAZA",
+    "direccion": "Plaza Bolívar, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, Venezuela",
+    "lat": 9.925852,
+    "lng": -69.620788,
+    "osmId": "way:833686229"
+  },
+  {
+    "nombre": "Guardia Nacional",
+    "categoria": "POLICIA",
+    "direccion": "Guardia Nacional, Avenida 14, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.932865,
+    "lng": -69.623117,
+    "osmId": "node:6537560156"
+  },
+  {
+    "nombre": "Oficina de Transito Quibor",
+    "categoria": "POLICIA",
+    "direccion": "Oficina de Transito Quibor, R-13, Los Jebes, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.932185,
+    "lng": -69.601951,
+    "osmId": "node:6555850905"
+  },
+  {
+    "nombre": "Policía Local de Jiménez",
+    "categoria": "POLICIA",
+    "direccion": "Policía Local de Jiménez, Calle 11, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.929844,
+    "lng": -69.621267,
+    "osmId": "node:6524937114"
+  },
+  {
+    "nombre": "Bar Restaurante las Nuevas Breñas",
+    "categoria": "RESTAURANTE",
+    "direccion": "Bar Restaurante las Nuevas Breñas, Avenida Florencio Jiménez, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.930435,
+    "lng": -69.607897,
+    "osmId": "node:6528468876"
+  },
+  {
+    "nombre": "Restaurant Brisas de Yacambu",
+    "categoria": "RESTAURANTE",
+    "direccion": "Restaurant Brisas de Yacambu, Avenida Florencio Jiménez, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.930021,
+    "lng": -69.607498,
+    "osmId": "node:6524917321"
+  },
+  {
+    "nombre": "Ambulatorio De Campo Lindo",
+    "categoria": "SALUD",
+    "direccion": "Ambulatorio De Campo Lindo, Avenida Florencio Jiménez, Carabujano, Campo Lindo, Parroquia Tintorero, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.958666,
+    "lng": -69.566901,
+    "osmId": "node:10930190230"
+  },
+  {
+    "nombre": "Clínica Altagracia",
+    "categoria": "SALUD",
+    "direccion": "Clínica Altagracia, Calle 10, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.926725,
+    "lng": -69.620754,
+    "osmId": "node:6524942965"
+  },
+  {
+    "nombre": "Clínica Tovar y Tovar",
+    "categoria": "SALUD",
+    "direccion": "Clínica Tovar y Tovar, Calle 9, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.930019,
+    "lng": -69.620868,
+    "osmId": "node:6524967210"
+  },
+  {
+    "nombre": "Hospital Dr. Baudilio Lara",
+    "categoria": "SALUD",
+    "direccion": "Hospital Dr. Baudilio Lara, Avenida 13, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.931453,
+    "lng": -69.622129,
+    "osmId": "node:6528203588"
+  },
+  {
+    "nombre": "Sector San Valetín",
+    "categoria": "SECTOR",
+    "direccion": "Sector San Valetín, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, Venezuela",
+    "lat": 9.916712,
+    "lng": -69.619024,
+    "osmId": "relation:21432671"
+  },
+  {
+    "nombre": "Supermercado La Palma",
+    "categoria": "SUPERMERCADO",
+    "direccion": "Supermercado La Palma, Avenida 7, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.925863,
+    "lng": -69.618781,
+    "osmId": "node:6524936000"
+  },
+  {
+    "nombre": "TodoMarket",
+    "categoria": "SUPERMERCADO",
+    "direccion": "TodoMarket, Avenida Florencio Jiménez, Parroquia Mariano Peraza, Municipio Jiménez, Estado Lara, 3061, Venezuela",
+    "lat": 9.928537,
+    "lng": -69.612356,
+    "osmId": "node:6537525862"
+  },
+  {
+    "nombre": "Urbanización Playa Bonita",
+    "categoria": "URBANIZACION",
+    "direccion": "Urbanización Playa Bonita, Quíbor, Parroquia Juan Bautista Rodríguez, Municipio Jiménez, Estado Lara, 6031, Venezuela",
+    "lat": 9.918642,
+    "lng": -69.630884,
+    "osmId": "node:4232096890"
+  }
+]

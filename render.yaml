@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: ruta-rides-api
+    runtime: node
+    plan: starter
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node scripts/create-admin.js && node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.23.3
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: DB_PATH
+        value: /var/data/database.sqlite
+      - key: CORS_ORIGINS
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_PHONE
+        sync: false
+      - key: GEOCODING_PROVIDER
+        value: osm
+      - key: GEOCODING_BASE_URL
+        value: https://nominatim.openstreetmap.org
+      - key: GEOCODING_VIEWBOX
+        value: -69.68,9.98,-69.56,9.88
+      - key: ROUTING_PROVIDER
+        value: osrm
+      - key: ROUTING_BASE_URL
+        value: https://router.project-osrm.org
+      - key: EXCHANGE_RATE_URL
+        value: https://ve.dolarapi.com/v1/dolares/oficial
+    disk:
+      name: ruta-data
+      mountPath: /var/data
+      sizeGB: 1
