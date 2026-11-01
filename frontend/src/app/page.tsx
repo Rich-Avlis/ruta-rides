@@ -67,10 +67,10 @@ export default function HomePage() {
           <Image
             src="/brand/ruta-logo-orange.png"
             alt="RUTA RIDES"
-            width={2872}
-            height={1380}
+            width={220}
+            height={106}
             priority
-            style={{ height: 54, width: 'auto' }}
+            className="h-[54px] w-auto"
           />
           <span className="rounded-full border border-white/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
             Quíbor

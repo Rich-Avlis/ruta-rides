@@ -65,14 +65,14 @@ export default function StartPage() {
           <Image
             src="/brand/ruta-logo-black.png"
             alt="RUTA RIDES"
-            width={2872}
-            height={1380}
+            width={220}
+            height={106}
             priority
-            style={{ height: 52, width: 'auto' }}
+            className="h-[52px] w-auto"
           />
         </div>
 
-        <h1 className="mt-10 text-[2.15rem] font-black leading-[1.02] tracking-[-0.035em] text-ink">
+        <h1 className="mt-8 text-[2.15rem] font-black leading-[1.02] tracking-[-0.035em] text-ink">
           ¿Cómo quieres
           <br />
           continuar?
@@ -81,7 +81,7 @@ export default function StartPage() {
           Elige tu modo. Puedes cambiar de cuenta cuando quieras.
         </p>
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-7 space-y-4">
           {options.map((option) => (
             <Link
               key={option.href}
