@@ -28,9 +28,9 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-white/95 backdrop-blur">
-      <div className="h-1 w-full bg-ruta-500" />
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        <RutaLogo size={36} />
+      <div className="h-[3px] w-full bg-ruta-500" />
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
+        <RutaLogo size={30} />
 
         <nav className="flex items-center gap-2 sm:gap-3" aria-label="Navegación principal">
           {user ? (
@@ -38,7 +38,7 @@ export default function Header() {
               {user.rol === 'PASSENGER' && (
                 <Link
                   href="/passenger"
-                  className="rounded-full px-3 py-2 text-xs font-bold text-ink hover:bg-ruta-50"
+                  className="btn-ghost min-h-0 h-9 px-3 text-xs"
                 >
                   Viajar
                 </Link>
@@ -46,7 +46,7 @@ export default function Header() {
               {user.rol === 'DRIVER' && (
                 <Link
                   href="/driver"
-                  className="rounded-full px-3 py-2 text-xs font-bold text-ink hover:bg-ruta-50"
+                  className="btn-ghost min-h-0 h-9 px-3 text-xs"
                 >
                   Conducir
                 </Link>
@@ -54,7 +54,7 @@ export default function Header() {
               {(user.rol === 'ADMIN' || user.rol === 'SUPER_ADMIN') && (
                 <Link
                   href="/admin"
-                  className="rounded-full bg-ruta-50 px-3 py-2 text-xs font-bold text-ruta-700"
+                  className="pill border-ruta-200 bg-ruta-50 text-ruta-700"
                 >
                   Tarifas
                 </Link>
@@ -71,7 +71,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="rounded-full border border-line px-3 py-2 text-xs font-bold text-ink hover:border-ruta-500"
+                className="pill h-9"
               >
                 Salir
               </button>
@@ -80,11 +80,11 @@ export default function Header() {
             <>
               <Link
                 href="/login"
-                className="rounded-full px-3 py-2 text-xs font-bold text-ink hover:bg-ruta-50"
+                className="btn-ghost min-h-0 h-9 px-3 text-xs"
               >
                 Iniciar sesión
               </Link>
-              <Link href="/start" className="btn-primary min-h-0 px-4 py-2 text-xs">
+              <Link href="/start" className="btn-primary min-h-0 h-9 px-4 text-xs">
                 Comenzar
               </Link>
             </>

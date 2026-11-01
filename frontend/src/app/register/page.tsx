@@ -107,7 +107,7 @@ function RegisterForm() {
           <RutaLogo size={40} />
         </div>
 
-        <div className="card p-6 sm:p-8">
+        <div className="surface p-6 sm:p-8">
           <span className="brutal-label">Registro</span>
           <h1 className="mt-3 text-3xl font-black leading-none tracking-tight">
             Crear cuenta

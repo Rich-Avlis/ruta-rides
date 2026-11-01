@@ -52,15 +52,16 @@ function LoginForm() {
   }
 
   return (
-    <main id="contenido" className="flex min-h-screen items-center justify-center bg-canvas p-4">
+    <main id="contenido" className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas p-4">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(120%_90%_at_50%_0%,#FFF1E6_0%,rgba(244,244,241,0)_75%)]" aria-hidden="true" />
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <RutaLogo size={40} />
         </div>
 
-        <div className="card p-6 sm:p-8">
+        <div className="surface relative p-6 sm:p-8">
           <span className="brutal-label">Acceso</span>
-          <h1 className="mt-3 text-3xl font-black leading-none tracking-tight">
+          <h1 className="mt-3 text-[2rem] font-black leading-none tracking-[-0.03em]">
             Iniciar sesión
           </h1>
           <p className="mt-2 text-sm font-medium text-muted">

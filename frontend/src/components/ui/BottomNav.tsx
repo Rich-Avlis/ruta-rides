@@ -55,7 +55,7 @@ export default function BottomNav({ role }: { role: UserRole }) {
 
   return (
     <nav className="bottom-nav" aria-label="Navegación inferior">
-      <div className="mx-auto grid max-w-md grid-cols-4">
+      <div className="bottom-nav-inner">
         {items.map((item) => {
           const active =
             pathname === item.href ||
