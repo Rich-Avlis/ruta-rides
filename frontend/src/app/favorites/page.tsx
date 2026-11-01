@@ -312,7 +312,7 @@ function FavoritesContent() {
       </main>
 
       <div className="pointer-events-none mx-auto mt-auto w-full max-w-md">
-        <CitySkyline className="h-24 w-full object-cover object-bottom opacity-80" />
+        <CitySkyline className="h-32 w-full object-cover object-bottom opacity-80" />
       </div>
 
       <BottomNav role={user.rol} />

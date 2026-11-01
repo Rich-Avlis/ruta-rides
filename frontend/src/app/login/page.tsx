@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import RutaLogo from '@/components/RutaLogo';
+import CitySkyline from '@/components/brand/CitySkyline';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome, safeNextPath } from '@/lib/session';
 
@@ -146,6 +147,8 @@ function LoginForm() {
             Volver al inicio
           </Link>
         </p>
+
+        <CitySkyline className="pointer-events-none mt-6 h-24 w-full object-cover object-bottom opacity-30" />
       </div>
     </main>
   );

@@ -56,7 +56,7 @@ export default function HomePage() {
       className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-ink text-white"
     >
       <UrbanScene className="pointer-events-none absolute inset-x-0 top-0 h-[54%] w-full" />
-      <CitySkyline className="pointer-events-none absolute inset-x-0 bottom-14 h-32 w-full object-cover object-bottom opacity-[0.16] invert" />
+      <CitySkyline className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] w-full object-cover object-bottom opacity-[0.22] invert" />
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-[54%] bg-gradient-to-b from-ink/25 via-ink/40 to-ink"
         aria-hidden="true"
@@ -82,9 +82,9 @@ export default function HomePage() {
             Movilidad urbana
           </p>
           <h1 className="mt-3 text-[2.9rem] font-black leading-[0.92] tracking-[-0.04em]">
-            Muévete fácil,
+            Tu ciudad,
             <br />
-            muévete <span className="text-ruta-500">mejor.</span>
+            tu <span className="text-ruta-500">ruta.</span>
           </h1>
           <p className="mt-4 max-w-[19rem] text-sm leading-relaxed text-white/60">
             Pide tu viaje en Quíbor, conoce la tarifa antes de salir y sigue
