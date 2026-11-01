@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import Header from '@/components/Header';
 import RequireAuth, { FullScreenLoader } from '@/components/RequireAuth';
 import NegotiationPanel from '@/components/ride/NegotiationPanel';
+import CityBackdrop from '@/components/brand/CityBackdrop';
 import PaymentProof from '@/components/ride/PaymentProof';
 import RatingForm from '@/components/ride/RatingForm';
 import { useAuth } from '@/contexts/AuthContext';
@@ -436,6 +437,8 @@ function RideContent() {
             )}
           </div>
         </div>
+
+        <CityBackdrop tone="light" opacity={0.22} className="mt-6" />
       </main>
     </div>
   );

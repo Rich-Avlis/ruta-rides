@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Header from '@/components/Header';
 import RequireAuth, { FullScreenLoader } from '@/components/RequireAuth';
+import CityBackdrop from '@/components/brand/CityBackdrop';
 import api from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/errors';
 import type { AuditLog, LocalPlace } from '@/lib/types';
@@ -551,6 +552,7 @@ function AdminContent() {
             </ul>
           )}
         </section>
+        <CityBackdrop tone="light" opacity={0.2} className="mt-8" />
       </main>
     </div>
   );
