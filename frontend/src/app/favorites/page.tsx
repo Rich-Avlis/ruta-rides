@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import RequireAuth from '@/components/RequireAuth';
 import BottomNav from '@/components/ui/BottomNav';
 import PlaceSearch from '@/components/places/PlaceSearch';
-import { SkylineStrip } from '@/components/brand/UrbanScene';
+import CitySkyline from '@/components/brand/CitySkyline';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/errors';
@@ -311,8 +311,8 @@ function FavoritesContent() {
         )}
       </main>
 
-      <div className="pointer-events-none mx-auto mt-auto w-full max-w-md px-4 opacity-90">
-        <SkylineStrip className="h-16 w-full" />
+      <div className="pointer-events-none mx-auto mt-auto w-full max-w-md">
+        <CitySkyline className="h-24 w-full object-cover object-bottom opacity-80" />
       </div>
 
       <BottomNav role={user.rol} />

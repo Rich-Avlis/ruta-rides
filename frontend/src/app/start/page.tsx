@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome } from '@/lib/session';
-import { SkylineStrip } from '@/components/brand/UrbanScene';
+import CitySkyline from '@/components/brand/CitySkyline';
 
 const options = [
   {
@@ -127,8 +127,8 @@ export default function StartPage() {
       </div>
 
       <div className="pointer-events-none relative mt-2 w-full">
-        <SkylineStrip className="h-20 w-full" />
-        <div className="h-5 bg-ruta-500" />
+        <CitySkyline className="h-24 w-full object-cover object-bottom" />
+        <div className="h-4 bg-ruta-500" />
       </div>
     </main>
   );

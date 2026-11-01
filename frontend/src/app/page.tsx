@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome } from '@/lib/session';
 import { UrbanScene } from '@/components/brand/UrbanScene';
+import CitySkyline from '@/components/brand/CitySkyline';
 
 const promises = [
   { label: 'Seguro', icon: 'shield' },
@@ -55,6 +56,7 @@ export default function HomePage() {
       className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-ink text-white"
     >
       <UrbanScene className="pointer-events-none absolute inset-x-0 top-0 h-[54%] w-full" />
+      <CitySkyline className="pointer-events-none absolute inset-x-0 bottom-14 h-32 w-full object-cover object-bottom opacity-[0.16] invert" />
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-[54%] bg-gradient-to-b from-ink/25 via-ink/40 to-ink"
         aria-hidden="true"
