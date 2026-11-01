@@ -93,8 +93,8 @@ export default function HomePage() {
           ))}
         </div>
 
-        <div className="mt-7 flex-1">
-          <div className="relative h-full min-h-[190px] overflow-hidden rounded-[1.75rem] border border-line bg-ink">
+        <div className="mt-7">
+          <div className="relative h-[min(36vh,360px)] overflow-hidden rounded-[1.75rem] border border-line bg-ink">
             <svg
               className="absolute inset-0 h-full w-full"
               viewBox="0 0 360 260"
@@ -134,7 +134,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="mt-5 space-y-3">
+        <div className="mt-auto space-y-3 pt-6">
           <Link href="/start" className="btn-primary w-full">
             Comenzar
           </Link>
