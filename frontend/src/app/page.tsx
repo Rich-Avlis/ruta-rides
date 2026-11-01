@@ -93,7 +93,48 @@ export default function HomePage() {
           ))}
         </div>
 
-        <div className="mt-auto space-y-3 pt-10">
+        <div className="mt-7 flex-1">
+          <div className="relative h-full min-h-[190px] overflow-hidden rounded-[1.75rem] border border-line bg-ink">
+            <svg
+              className="absolute inset-0 h-full w-full"
+              viewBox="0 0 360 260"
+              fill="none"
+              aria-hidden="true"
+            >
+              <g stroke="#2A2A2A" strokeWidth="1">
+                <path d="M-10 40 H370" />
+                <path d="M-10 96 H370" />
+                <path d="M-10 150 H370" />
+                <path d="M-10 208 H370" />
+                <path d="M48 -10 V270" />
+                <path d="M112 -10 V270" />
+                <path d="M182 -10 V270" />
+                <path d="M250 -10 V270" />
+                <path d="M312 -10 V270" />
+              </g>
+              <path
+                d="M54 212 C 96 200, 96 150, 138 138 S 196 120, 210 82 S 246 44, 292 44"
+                stroke="#FD7624"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeDasharray="1 9"
+              />
+              <circle cx="54" cy="212" r="7" fill="#FD7624" />
+              <circle cx="54" cy="212" r="13" stroke="#FD7624" strokeOpacity="0.35" strokeWidth="3" />
+              <circle cx="292" cy="44" r="8" fill="#0B0B0B" stroke="#FD7624" strokeWidth="3" />
+            </svg>
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/85 to-transparent p-4 pt-10">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/45">
+                Ruta en vivo
+              </p>
+              <p className="mt-1 text-sm font-bold text-white">
+                Quíbor · tarifa antes de salir
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-5 space-y-3">
           <Link href="/start" className="btn-primary w-full">
             Comenzar
           </Link>
