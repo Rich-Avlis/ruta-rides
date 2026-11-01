@@ -58,9 +58,13 @@ export default function HomePage() {
         className="pointer-events-none absolute -right-28 -top-28 h-80 w-80 rounded-full bg-ruta-500/25 blur-3xl"
         aria-hidden="true"
       />
-      <CitySkyline className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] w-full object-cover object-bottom opacity-[0.22] invert" />
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-[58%] bg-gradient-to-b from-ink/40 via-ink/60 to-ink"
+        aria-hidden="true"
+      />
+      <CitySkyline className="pointer-events-none absolute inset-x-0 bottom-0 h-[44%] w-full object-cover object-bottom opacity-[0.34] invert" />
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink via-ink/40 to-transparent"
         aria-hidden="true"
       />
 
