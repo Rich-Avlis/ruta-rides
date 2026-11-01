@@ -52,7 +52,7 @@ export default function StartPage() {
         <div className="mx-auto w-full max-w-md">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-xs font-bold text-white/55 transition-colors hover:text-white"
+            className="flex w-fit items-center gap-2 text-xs font-bold text-white/55 transition-colors hover:text-white"
           >
             <span aria-hidden="true">←</span> Volver
           </Link>
