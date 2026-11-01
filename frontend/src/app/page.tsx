@@ -54,9 +54,9 @@ export default function HomePage() {
       id="contenido"
       className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-ink text-white"
     >
-      <UrbanScene className="pointer-events-none absolute inset-x-0 top-0 h-[68%] w-full" />
+      <UrbanScene className="pointer-events-none absolute inset-x-0 top-0 h-[54%] w-full" />
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[68%] bg-gradient-to-b from-ink/55 via-ink/45 to-ink"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[54%] bg-gradient-to-b from-ink/25 via-ink/40 to-ink"
         aria-hidden="true"
       />
 
