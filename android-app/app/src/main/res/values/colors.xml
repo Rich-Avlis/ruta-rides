@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ruta_orange">#FD7624</color>
+    <color name="ruta_orange_dark">#E05F10</color>
+    <color name="ruta_ink">#0B0B0B</color>
+    <color name="ruta_muted">#9A9A9A</color>
+    <color name="ruta_white">#FFFFFF</color>
+</resources>

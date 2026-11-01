@@ -99,13 +99,21 @@ Después del primer deploy:
 
 ## 4. APK
 
-1. Instalar el APK.
-2. Cambiar servidor a la URL de Vercel:
-   `https://<proyecto>.vercel.app`
-3. Abrir.
+El APK es una app Android nativa que abre RUTA RIDES en un WebView a pantalla
+completa, con splash propio, GPS, subida de comprobantes y botón atrás.
 
-Si se quiere que el APK traiga la URL por defecto, cambiar `DEFAULT_URL` en
-`android-app/.../MainActivity.java` y recompilar.
+1. Instalar `RUTA-RIDES-debug.apk`.
+2. Abrir: carga `https://ruta-rides.vercel.app` directamente.
+3. Aceptar el permiso de ubicación cuando la app lo pida.
+
+La URL por defecto está en `DEFAULT_URL` de
+`android-app/.../MainActivity.java`. Para recompilar:
+
+```bash
+cd android-app
+JAVA_HOME=~/tools/jdk17/Contents/Home \
+  ~/.gradle/wrapper/dists/gradle-8.11.1-all/*/gradle-8.11.1/bin/gradle assembleDebug
+```
 
 ---
 
