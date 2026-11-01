@@ -198,133 +198,193 @@ function RideContent() {
     ride.estado
   );
 
+  const shareRide = async () => {
+    const url = typeof window !== 'undefined' ? window.location.href : '';
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'Mi viaje en RUTA RIDES', url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast.success('Enlace del viaje copiado');
+      }
+    } catch {
+      // El usuario canceló el diálogo de compartir.
+    }
+  };
+
+  const driverName = ride.conductor
+    ? `${ride.conductor.nombre} ${ride.conductor.apellido}`
+    : 'Buscando conductor';
+  const driverPhone = ride.conductor?.telefono ?? null;
+  const profile = ride.conductor?.driverProfile;
+  const progress =
+    currentIndex >= 0 ? Math.round((currentIndex / (STATUS_STEPS.length - 1)) * 100) : 0;
+  const etaMinutes =
+    ride.estado === 'TRIP_STARTED'
+      ? ride.tiempoEstimado ?? 0
+      : ride.estado === 'DRIVER_ASSIGNED' || ride.estado === 'DRIVER_EN_ROUTE'
+        ? ride.tiempoEstimado ?? 0
+        : 0;
+
   return (
-    <div className="min-h-screen bg-canvas">
-      <Header />
+    <div className="min-h-screen bg-white pb-10">
+      <div className="relative h-[52vh] w-full">
+        <MapView
+          center={[ride.origenLat, ride.origenLng]}
+          origin={{ lat: ride.origenLat, lng: ride.origenLng }}
+          destination={{ lat: ride.destinoLat, lng: ride.destinoLng }}
+          stops={ride.stops?.map((stop) => ({ lat: stop.lat, lng: stop.lng })) ?? []}
+          driver={driverLocation}
+          route={geometry}
+        />
 
-      <main id="contenido" className="mx-auto max-w-6xl px-4 py-6">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <span className="brutal-label">Viaje</span>
-            <h1 className="mt-2 text-3xl font-black leading-none tracking-tight">
-              {STATUS_LABELS[ride.estado] ?? ride.estado}
-            </h1>
-          </div>
-          <Link href="/passenger" className="btn-secondary min-h-0 px-3 py-2 text-xs">
-            Volver
+        <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between gap-2 p-3">
+          <Link
+            href="/passenger"
+            aria-label="Volver al mapa"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink shadow-[0_6px_18px_rgba(11,11,11,0.16)]"
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </Link>
+
+          <span className="rounded-full bg-white px-3.5 py-2 text-[11px] font-black text-ink shadow-[0_6px_18px_rgba(11,11,11,0.16)]">
+            {STATUS_LABELS[ride.estado] ?? ride.estado}
+          </span>
+
+          <button
+            type="button"
+            onClick={() => void shareRide()}
+            className="rounded-full bg-ink px-3.5 py-2 text-[11px] font-black text-white shadow-[0_6px_18px_rgba(11,11,11,0.2)]"
+          >
+            Compartir
+          </button>
         </div>
+      </div>
 
-        <div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_1fr]">
-          <div className="h-[45vh] overflow-hidden border border-line shadow-soft lg:h-[520px]">
-            <MapView
-              center={[ride.origenLat, ride.origenLng]}
-              origin={{ lat: ride.origenLat, lng: ride.origenLng }}
-              destination={{ lat: ride.destinoLat, lng: ride.destinoLng }}
-              stops={ride.stops?.map((stop) => ({ lat: stop.lat, lng: stop.lng })) ?? []}
-              driver={driverLocation}
-              route={geometry}
-            />
-          </div>
+      <main
+        id="contenido"
+        className="relative z-10 -mt-6 rounded-t-[1.75rem] border-t border-line bg-white px-4 pb-6 pt-4 shadow-[0_-16px_40px_rgba(11,11,11,0.12)]"
+      >
+        <div className="mx-auto max-w-md">
+          <div className="flex items-start gap-3">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-ruta-500 text-lg font-black text-ink">
+              {ride.conductor?.foto ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={ride.conductor.foto} alt="" className="h-full w-full object-cover" />
+              ) : (
+                (ride.conductor?.nombre?.[0] ?? 'R')
+              )}
+            </span>
 
-          <div className="space-y-4">
-            <div className="card p-5">
-              <span className="brutal-label">Estado</span>
-              <ol className="mt-4 space-y-2">
-                {STATUS_STEPS.map((step, index) => {
-                  const done = currentIndex >= 0 && index < currentIndex;
-                  const current = index === currentIndex;
-                  return (
-                    <li
-                      key={step}
-                      className={`flex items-center gap-3 border-2 px-3 py-2 text-xs font-black uppercase tracking-wide ${
-                        current
-                          ? 'border-ink bg-ruta-500 text-ink'
-                          : done
-                            ? 'border-ink bg-ink text-white'
-                            : 'border-line/40 bg-white text-muted'
-                      }`}
-                    >
-                      <span className="inline-block h-2 w-2 bg-current" />
-                      {STATUS_LABELS[step]}
-                    </li>
-                  );
-                })}
-              </ol>
-
-              {ride.estado === 'CANCELLED' && (
-                <p className="mt-3 border-2 border-ruta-500 bg-ruta-50 p-3 text-xs font-bold uppercase text-ruta-700">
-                  Cancelado por {ride.canceladoPor?.toLowerCase() ?? 'el sistema'}
-                  {ride.motivoCancelacion ? `: ${ride.motivoCancelacion}` : ''}
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-base font-black leading-tight">{driverName}</p>
+              <p className="mt-0.5 flex items-center gap-1 text-xs font-semibold text-muted">
+                <span className="text-ruta-500">★</span>
+                {profile?.calificacion?.toFixed(1) ?? '—'} ·{' '}
+                {profile?.cantidadViajes ?? 0} viajes
+              </p>
+              {profile && (
+                <p className="mt-0.5 truncate text-[11px] text-muted">
+                  {profile.marcaVehiculo} {profile.modeloVehiculo} · {profile.colorVehiculo} ·{' '}
+                  <span className="font-bold text-ink">{profile.placaVehiculo}</span>
                 </p>
               )}
             </div>
 
-            {ride.conductor && (
-              <div className="card p-5">
-                <span className="brutal-label">Conductor</span>
-                <p className="mt-3 text-lg font-black uppercase">
-                  {ride.conductor.nombre} {ride.conductor.apellido}
-                </p>
-                {ride.conductor.driverProfile && (
-                  <p className="text-sm text-muted">
-                    {ride.conductor.driverProfile.tipoVehiculo} ·{' '}
-                    {ride.conductor.driverProfile.marcaVehiculo}{' '}
-                    {ride.conductor.driverProfile.modeloVehiculo} ·{' '}
-                    {ride.conductor.driverProfile.colorVehiculo} ·{' '}
-                    {ride.conductor.driverProfile.placaVehiculo}
-                  </p>
-                )}
-                {ride.conductor.telefono && (
+            <div className="flex gap-1.5">
+              {driverPhone && (
+                <>
                   <a
-                    href={`tel:${ride.conductor.telefono}`}
-                    className="btn-secondary mt-3 w-full"
+                    href={`tel:${driverPhone}`}
+                    aria-label="Llamar al conductor"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-ruta-50 text-ruta-700"
                   >
-                    Llamar al conductor
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+                    </svg>
                   </a>
-                )}
-              </div>
-            )}
+                  <a
+                    href={`sms:${driverPhone}`}
+                    aria-label="Enviar mensaje al conductor"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-fog text-ink"
+                  >
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M4 5h16v11H9l-5 4V5Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+                    </svg>
+                  </a>
+                </>
+              )}
+            </div>
+          </div>
 
-            <div className="card p-5">
-              <span className="brutal-label">Pago</span>
-              <div className="mt-3 flex items-end justify-between">
-                <span className="text-sm text-muted">
-                  {ride.metodoPago === 'EFECTIVO' ? 'Efectivo' : 'Pago móvil'}
-                </span>
-                <span className="text-2xl font-black">
-                  {formatMoney(ride.tarifaFinal ?? 0, ride.moneda ?? 'USD')}
-                </span>
-              </div>
-              {ride.totalBs && (
-                <p className="mt-1 text-sm font-black text-ruta-700">{formatBs(ride.totalBs)}</p>
-              )}
-              {ride.pago?.referencia && (
-                <p className="mt-1 text-xs font-bold uppercase tracking-wide text-muted">
-                  Referencia {ride.pago.referencia}
+          <div className="mt-4 rounded-2xl bg-ink px-4 py-3 text-white">
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50">
+                  {ride.estado === 'TRIP_STARTED' ? 'Llegada estimada' : 'Llegada del conductor'}
                 </p>
-              )}
-              <p className="mt-2 text-xs text-muted">
-                Creado {formatTime(ride.createdAt)} · {formatDistance(ride.distancia ?? 0)} ·{' '}
+                <p className="mt-1 text-2xl font-black leading-none">
+                  {etaMinutes > 0 ? `${Math.round(etaMinutes)} min` : STATUS_LABELS[ride.estado]}
+                </p>
+              </div>
+              <p className="text-right text-[11px] leading-tight text-white/50">
+                {formatDistance(ride.distancia ?? 0)}
+                <br />
                 {formatDuration(ride.tiempoEstimado ?? 0)}
               </p>
             </div>
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/15">
+              <div
+                className="h-full rounded-full bg-ruta-500 transition-all"
+                style={{ width: `${Math.max(8, progress)}%` }}
+              />
+            </div>
+          </div>
 
-            <div className="card p-5">
-              <span className="brutal-label">Ruta</span>
-              <p className="mt-3 text-sm font-bold">{ride.origenDireccion || 'Origen'}</p>
-              <p className="text-xs text-muted">→ {ride.destinoDireccion || 'Destino'}</p>
-              {ride.stops && ride.stops.length > 0 && (
-                <ol className="mt-2 space-y-1">
-                  {ride.stops.map((stop) => (
-                    <li key={stop.id} className="text-xs text-muted">
-                      Parada {stop.orden}: {stop.nombre || stop.direccion || 'Punto'}
-                    </li>
-                  ))}
-                </ol>
+          {ride.estado === 'CANCELLED' && (
+            <p className="mt-3 rounded-xl border border-ruta-500 bg-ruta-50 p-3 text-xs font-bold text-ruta-700">
+              Cancelado por {ride.canceladoPor?.toLowerCase() ?? 'el sistema'}
+              {ride.motivoCancelacion ? `: ${ride.motivoCancelacion}` : ''}
+            </p>
+          )}
+
+          <div className="mt-3 rounded-2xl border border-line">
+            <div className="flex items-start gap-2.5 border-b border-line p-3">
+              <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-ruta-500" />
+              <div className="min-w-0">
+                <p className="truncate text-xs font-bold">{ride.origenDireccion || 'Origen'}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2.5 p-3">
+              <span className="mt-1 h-2.5 w-2.5 shrink-0 rotate-45 bg-ink" />
+              <div className="min-w-0">
+                <p className="truncate text-xs font-bold">{ride.destinoDireccion || 'Destino'}</p>
+                {ride.stops && ride.stops.length > 0 && (
+                  <p className="mt-1 text-[11px] text-muted">
+                    {ride.stops.length} parada(s) intermedia(s)
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between rounded-2xl border border-line px-3 py-2.5">
+            <span className="text-[11px] font-bold uppercase tracking-wide text-muted">
+              {ride.metodoPago === 'EFECTIVO' ? 'Efectivo' : 'Pago móvil'}
+            </span>
+            <div className="text-right">
+              <p className="text-lg font-black leading-none">
+                {formatMoney(ride.tarifaFinal ?? 0, ride.moneda ?? 'USD')}
+              </p>
+              {ride.totalBs && (
+                <p className="text-[11px] font-bold text-ruta-700">{formatBs(ride.totalBs)}</p>
               )}
             </div>
+          </div>
 
+          <div className="mt-3 space-y-3">
             {ride.metodoPago === 'PAGO_MOVIL' &&
               ['TRIP_COMPLETED', 'PAYMENT_PENDING', 'COMPLETED'].includes(ride.estado) && (
                 <PaymentProof
@@ -344,12 +404,18 @@ function RideContent() {
               />
             )}
 
+            {ride.pago?.referencia && (
+              <p className="text-center text-[11px] font-bold uppercase tracking-wide text-muted">
+                Referencia {ride.pago.referencia}
+              </p>
+            )}
+
             {canCancel && (
               <button
                 type="button"
                 onClick={handleCancel}
                 disabled={cancelling}
-                className="btn-secondary w-full border-ruta-500 text-ruta-700"
+                className="btn-secondary w-full text-ruta-700"
               >
                 {cancelling ? 'Cancelando…' : 'Cancelar viaje'}
               </button>

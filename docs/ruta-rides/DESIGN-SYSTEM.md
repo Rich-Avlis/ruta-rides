@@ -97,3 +97,28 @@ alias del sistema nuevo para no romper pantallas existentes.
 - No anidar tarjetas dentro de tarjetas; usar divisores.
 - No usar sombras duras ni degradados de varios colores.
 - Todo texto de acción en imperativo corto: "Pedir viaje", "Ponerme en línea".
+
+## 7. Recursos gráficos y licencias
+
+| Recurso | Origen | Licencia / uso |
+| --- | --- | --- |
+| Logotipo RUTA RIDES | Diseño propio del proyecto (`frontend/public/brand`) | Uso exclusivo del producto |
+| Escena urbana (`UrbanScene`, `SkylineStrip`) | SVG original creado en este repositorio | Código del proyecto |
+| Iconografía de interfaz | SVG propios, trazo de 1.8–2.4 px | Código del proyecto |
+| Mapas base | OpenStreetMap (`tile.openstreetmap.org`) | Datos ODbL, atribución visible |
+| Rutas | OSRM público | Uso de desarrollo; requiere instancia propia en producción |
+| Geocodificación | Nominatim público | Política de uso de Nominatim |
+| Librería de mapas | Leaflet | BSD-2-Clause |
+
+No se usan fotos, ilustraciones, iconos ni recursos de terceros de otras
+plataformas de movilidad.
+
+## 8. Revisión de similitud
+
+La dirección visual se construyó desde cero: paleta naranja/gris/blanco/negro,
+tipografía propia del producto, escena urbana vectorial original y componentes
+definidos en este repositorio. No se copian pantallas, logotipos, iconos ni
+textos de competidores.
+
+Este documento no sustituye una revisión legal. Antes del lanzamiento comercial
+se recomienda una auditoría de propiedad intelectual y de signos distintivos.

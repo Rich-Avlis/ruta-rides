@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
-import Header from '@/components/Header';
+import NotificationBell from '@/components/NotificationBell';
 import BottomNav from '@/components/ui/BottomNav';
 import RequireAuth from '@/components/RequireAuth';
 import PlaceSearch from '@/components/places/PlaceSearch';
@@ -341,11 +342,9 @@ function PassengerContent() {
         : 'una parada';
 
   return (
-    <div className="flex h-[100dvh] flex-col bg-canvas">
-      <Header />
-
+    <div className="flex h-[100dvh] flex-col bg-white">
       <div className="flex flex-1 flex-col overflow-hidden md:flex-row">
-        <div className="relative h-[45vh] w-full shrink-0 border-b border-line md:h-auto md:min-h-0 md:flex-1 md:border-b-0 md:border-r">
+        <div className="relative h-[52vh] w-full shrink-0 md:h-auto md:min-h-0 md:flex-1 md:border-r">
           <MapView
             center={mapCenter}
             origin={origin}
@@ -356,10 +355,36 @@ function PassengerContent() {
             picking={pickMode !== null}
           />
 
+          <div className="absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 p-3">
+            <Link
+              href="/profile"
+              aria-label="Ir al perfil"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink shadow-[0_6px_18px_rgba(11,11,11,0.16)]"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </Link>
+
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              <Link
+                href="/profile"
+                aria-label="Mi perfil"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-ink text-white shadow-[0_6px_18px_rgba(11,11,11,0.2)]"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="8" r="3.6" stroke="currentColor" strokeWidth="2" />
+                  <path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+
           <button
             type="button"
             onClick={requestLocation}
-            className="absolute right-3 top-3 z-20 inline-flex items-center gap-2 border border-line bg-white px-3 py-2 text-xs font-black uppercase tracking-wide text-ink shadow-card hover:bg-ruta-500 hover:text-ink"
+            className="absolute bottom-4 right-3 z-20 inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-2.5 text-xs font-black uppercase tracking-wide text-ink shadow-card hover:bg-ruta-50"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
@@ -387,14 +412,41 @@ function PassengerContent() {
           )}
         </div>
 
-        <aside className="flex min-h-0 flex-1 flex-col overflow-y-auto border-t border-line bg-white p-4 pb-24 md:w-[430px] md:flex-none md:border-l md:border-t-0 md:p-5 md:pb-24">
-          <span className="brutal-label">Ruta</span>
-          <h1 className="mt-3 text-3xl font-black leading-none tracking-tight">
+        <aside className="relative z-10 -mt-6 flex min-h-0 flex-1 flex-col overflow-y-auto rounded-t-[1.75rem] border-t border-line bg-white p-5 pb-28 shadow-[0_-16px_40px_rgba(11,11,11,0.12)] md:mt-0 md:w-[430px] md:flex-none md:rounded-none md:border-l md:border-t-0 md:pb-28">
+          <h1 className="text-[1.8rem] font-black leading-none tracking-tight">
             ¿Pa&apos; dónde vas?
           </h1>
-          <p className="mt-2 text-sm font-medium text-muted">
-            Elige origen y destino. La distancia, el tiempo y la tarifa los calcula el servidor.
-          </p>
+
+          {favorites.length > 0 && (
+            <div className="mt-4 flex gap-2 overflow-x-auto pb-1" aria-label="Favoritos">
+              {favorites.slice(0, 5).map((favorite) => (
+                <button
+                  key={favorite.id}
+                  type="button"
+                  onClick={() => handleSelectFavorite(favorite)}
+                  className="flex shrink-0 flex-col items-center gap-1 rounded-2xl border border-line bg-white px-3.5 py-2.5 text-[10px] font-bold text-ink transition-colors hover:border-ruta-500"
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ruta-50 text-ruta-600">
+                    {favorite.label === 'CASA' ? (
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-8Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+                      </svg>
+                    ) : favorite.label === 'TRABAJO' ? (
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <rect x="3" y="7" width="18" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.9" />
+                        <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7" stroke="currentColor" strokeWidth="1.9" />
+                      </svg>
+                    ) : (
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </span>
+                  <span className="max-w-[64px] truncate">{LABEL_TEXT[favorite.label]}</span>
+                </button>
+              ))}
+            </div>
+          )}
 
           <section className="mt-5 border-t border-line pt-4" aria-labelledby="origin-title">
             <div className="flex items-center justify-between">
@@ -618,28 +670,49 @@ function PassengerContent() {
             </h2>
 
             <div className="mt-2 grid grid-cols-3 gap-2" role="group" aria-label="Modalidad del viaje">
-              {MODALITIES.map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  aria-pressed={modality === option.id}
-                  onClick={() => {
-                    resetRoute();
-                    setModality(option.id);
-                    if (option.id !== 'MULTIPARADA') setStops([]);
-                  }}
-                  className={`border border-line px-2 py-2 text-left transition-colors ${
-                    modality === option.id
-                      ? 'bg-ruta-500 text-ink'
-                      : 'bg-white text-ink hover:bg-ruta-50'
-                  }`}
-                >
-                  <span className="block text-xs font-black uppercase leading-tight">{option.label}</span>
-                  <span className={`mt-0.5 block text-[10px] leading-tight ${modality === option.id ? 'text-ink/70' : 'text-muted'}`}>
-                    {option.hint}
-                  </span>
-                </button>
-              ))}
+              {MODALITIES.map((option) => {
+                const active = modality === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => {
+                      resetRoute();
+                      setModality(option.id);
+                      if (option.id !== 'MULTIPARADA') setStops([]);
+                    }}
+                    className={`flex flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 text-center transition-colors ${
+                      active
+                        ? 'border-ruta-500 bg-ruta-500 text-ink'
+                        : 'border-line bg-white text-ink hover:border-ink/30'
+                    }`}
+                  >
+                    <span className={active ? 'text-ink' : 'text-muted'}>
+                      {option.id === 'SOLO_IDA' ? (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M4 15l1.4-4.6A2 2 0 0 1 7.3 9h9.4a2 2 0 0 1 1.9 1.4L20 15" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+                          <path d="M3 15h18v3.4h-2.2v-1.2H5.2v1.2H3Z" fill="currentColor" />
+                        </svg>
+                      ) : option.id === 'IDA_VUELTA' ? (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M6 9a6 6 0 0 1 10.5-2M18 15a6 6 0 0 1-10.5 2" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+                          <path d="M16 3v4h-4M8 21v-4h4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      ) : (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M6 18c0-4 4-4 4-8a2 2 0 1 1 4 0c0 4 4 4 4 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                          <circle cx="6" cy="19" r="2" fill="currentColor" />
+                          <circle cx="18" cy="19" r="2" fill="currentColor" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="text-[11px] font-black uppercase leading-tight">
+                      {option.label}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             {modality === 'IDA_VUELTA' && (
@@ -727,13 +800,23 @@ function PassengerContent() {
                 <div className="p-3">
                   {quote ? (
                     <>
-                      <div className="flex items-end justify-between bg-ink px-3 py-3 text-white">
-                        <span className="text-[10px] font-black uppercase tracking-[0.16em] text-white/70">
-                          Total cotizado
-                        </span>
-                        <span className="text-3xl font-black leading-none text-ruta-400">
-                          {formatMoney(quote.total, quote.moneda)}
-                        </span>
+                      <div className="flex items-center justify-between rounded-2xl border-2 border-ruta-500 bg-ruta-50 px-3 py-3">
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-ruta-700">
+                            RUTA · {modality === 'SOLO_IDA' ? 'Solo ida' : modality === 'IDA_VUELTA' ? 'Ida y vuelta' : 'Multiparada'}
+                          </p>
+                          <p className="mt-0.5 text-[11px] font-semibold text-muted">
+                            {formatDistance(route.distanceKm)} · {formatDuration(route.durationMin)}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl font-black leading-none">
+                            {formatMoney(quote.total, quote.moneda)}
+                          </span>
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-ruta-500">
+                            <span className="h-2 w-2 rounded-full bg-white" />
+                          </span>
+                        </div>
                       </div>
 
                       {quote.desglose.totalBs ? (
@@ -837,7 +920,7 @@ function PassengerContent() {
                     disabled={requesting || !quote}
                     className="btn-primary mt-3 w-full"
                   >
-                    {requesting ? 'Solicitando…' : 'Solicitar viaje'}
+                    {requesting ? 'Solicitando…' : 'Confirmar viaje'}
                   </button>
                   <p className="mt-2 text-center text-[10px] font-bold uppercase tracking-wide text-muted">
                     Pago {metodoPago === 'EFECTIVO' ? 'en efectivo' : 'por pago móvil'}

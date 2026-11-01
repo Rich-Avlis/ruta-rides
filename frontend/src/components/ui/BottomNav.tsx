@@ -12,7 +12,7 @@ const ICONS: Record<string, React.ReactNode> = {
   ),
   trips: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" strokeWidth="2" />
+      <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="2" />
       <path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   ),
@@ -33,13 +33,21 @@ const ICONS: Record<string, React.ReactNode> = {
       <circle cx="12" cy="12" r="2.5" stroke="currentColor" strokeWidth="2" />
     </svg>
   ),
+  pin: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <circle cx="12" cy="10" r="2.6" fill="currentColor" />
+    </svg>
+  ),
 };
+
+type Item = { href: string; label: string; icon: string; center?: boolean };
 
 export default function BottomNav({ role }: { role: UserRole }) {
   const pathname = usePathname();
   const isDriver = role === 'DRIVER';
 
-  const items = isDriver
+  const items: Item[] = isDriver
     ? [
         { href: '/driver', label: 'Inicio', icon: 'home' },
         { href: '/dashboard', label: 'Viajes', icon: 'trips' },
@@ -49,17 +57,35 @@ export default function BottomNav({ role }: { role: UserRole }) {
     : [
         { href: '/passenger', label: 'Inicio', icon: 'home' },
         { href: '/dashboard', label: 'Viajes', icon: 'trips' },
+        { href: '/passenger', label: 'Pedir', icon: 'pin', center: true },
         { href: '/favorites', label: 'Favoritos', icon: 'heart' },
         { href: '/profile', label: 'Perfil', icon: 'user' },
       ];
 
   return (
-    <nav className="bottom-nav" aria-label="Navegación inferior">
-      <div className="bottom-nav-inner">
+    <nav className={`bottom-nav ${isDriver ? '' : 'bottom-nav--five'}`} aria-label="Navegación inferior">
+      <div className={`bottom-nav-inner ${isDriver ? '' : 'grid-cols-5'}`}>
         {items.map((item) => {
           const active =
-            pathname === item.href ||
-            (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`));
+            item.href === '/passenger'
+              ? pathname === '/passenger' || pathname.startsWith('/passenger/')
+              : pathname === item.href ||
+                (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`));
+
+          if (item.center) {
+            return (
+              <Link
+                key={`${item.href}-${item.label}`}
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+                className="bottom-nav-center"
+              >
+                <span className="bottom-nav-center__button">{ICONS[item.icon]}</span>
+                <span className="sr-only">{item.label}</span>
+              </Link>
+            );
+          }
+
           return (
             <Link
               key={item.href}

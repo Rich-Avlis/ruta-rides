@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Header from '@/components/Header';
 import RequireAuth from '@/components/RequireAuth';
 import BottomNav from '@/components/ui/BottomNav';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,6 +15,92 @@ const ROLE_LABEL: Record<string, string> = {
   ADMIN: 'Administrador',
   SUPER_ADMIN: 'Super administrador',
 };
+
+const icons = {
+  trips: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  ),
+  heart: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 20s-7-4.3-7-9.3A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7 3.7c0 5-7 9.3-7 9.3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+    </svg>
+  ),
+  card: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="6" width="18" height="12" rx="3" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M3 10h18" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  ),
+  bell: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M18 15V10a6 6 0 1 0-12 0v5l-2 3h16l-2-3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M10 21h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  ),
+  help: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M9.5 9a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1 1-1.1 1.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="12" cy="17" r="1" fill="currentColor" />
+    </svg>
+  ),
+  exit: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M15 8l4 4-4 4M19 12H9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+};
+
+function Row({
+  icon,
+  label,
+  hint,
+  href,
+  onClick,
+  danger,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  hint?: string;
+  href?: string;
+  onClick?: () => void;
+  danger?: boolean;
+}) {
+  const content = (
+    <>
+      <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${danger ? 'bg-red-50 text-red-600' : 'bg-fog text-ink'}`}>
+        {icon}
+      </span>
+      <span className={`flex-1 text-left text-[15px] font-bold ${danger ? 'text-red-600' : 'text-ink'}`}>
+        {label}
+      </span>
+      {hint && <span className="text-[11px] font-bold uppercase tracking-wide text-muted">{hint}</span>}
+      {!danger && (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-muted">
+          <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-fog/60">
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-fog/60">
+      {content}
+    </button>
+  );
+}
 
 function ProfileContent() {
   const { user, profile, logout } = useAuth();
@@ -50,70 +135,88 @@ function ProfileContent() {
   };
 
   return (
-    <div className="min-h-screen bg-canvas pb-24">
-      <Header />
-
-      <main id="contenido" className="mx-auto max-w-2xl px-4 py-6">
-        <div className="card p-6">
-          <div className="flex items-center gap-4">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-ruta-500 text-2xl font-black text-black">
-              {initials || 'R'}
-            </span>
-            <div className="min-w-0">
-              <h1 className="truncate text-2xl font-black">
-                {user.nombre} {user.apellido}
-              </h1>
-              <p className="text-sm font-semibold text-ruta-700">
-                {ROLE_LABEL[user.rol] ?? user.rol}
-              </p>
-              <p className="truncate text-xs text-muted">{user.email}</p>
-            </div>
-          </div>
-
-          <div className="mt-5 grid grid-cols-3 gap-3 border-t border-line pt-4 text-center">
-            <div>
-              <p className="text-2xl font-black">{rides.length}</p>
-              <p className="text-[10px] font-bold uppercase tracking-wide text-muted">Viajes</p>
-            </div>
-            <div>
-              <p className="text-2xl font-black">{completed}</p>
-              <p className="text-[10px] font-bold uppercase tracking-wide text-muted">Completados</p>
-            </div>
-            <div>
-              <p className="text-2xl font-black text-ruta-600">{rating}</p>
-              <p className="text-[10px] font-bold uppercase tracking-wide text-muted">Calificación</p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-white pb-28">
+      <header className="sticky top-0 z-40 border-b border-line bg-white/92 backdrop-blur">
+        <div className="mx-auto flex h-14 max-w-md items-center justify-between px-4">
+          <h1 className="text-base font-black tracking-tight">Mi perfil</h1>
+          <span className="rounded-full border border-line px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-muted">
+            {ROLE_LABEL[user.rol] ?? user.rol}
+          </span>
         </div>
+      </header>
 
-        <div className="card mt-4 divide-y divide-line overflow-hidden">
-          <Link href="/dashboard" className="flex items-center justify-between px-5 py-4 hover:bg-ruta-50">
-            <span className="font-semibold">Mis viajes</span>
-            <span className="text-muted">→</span>
-          </Link>
-          {user.rol !== 'DRIVER' && (
-            <Link href="/favorites" className="flex items-center justify-between px-5 py-4 hover:bg-ruta-50">
-              <span className="font-semibold">Mis favoritos</span>
-              <span className="text-muted">→</span>
-            </Link>
-          )}
-          <div className="flex items-center justify-between px-5 py-4">
-            <span className="font-semibold">Métodos de pago</span>
-            <span className="text-xs font-bold uppercase text-muted">Efectivo · Pago móvil</span>
+      <main id="contenido" className="mx-auto max-w-md px-4 py-6">
+        <section className="flex items-center gap-4">
+          <span className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-ink text-xl font-black text-white">
+            {user.foto ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={user.foto} alt="" className="h-full w-full rounded-full object-cover" />
+            ) : (
+              initials || 'R'
+            )}
+          </span>
+          <div className="min-w-0">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-ruta-600">Tu cuenta</p>
+            <h2 className="mt-1 truncate text-[1.6rem] font-black leading-tight tracking-tight">
+              ¡Hola, {user.nombre}!
+            </h2>
+            <p className="truncate text-xs text-muted">{user.email}</p>
           </div>
-          <a href="mailto:soporte@rutarides.local" className="flex items-center justify-between px-5 py-4 hover:bg-ruta-50">
-            <span className="font-semibold">Ayuda y soporte</span>
-            <span className="text-muted">→</span>
-          </a>
-        </div>
+        </section>
 
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="btn-secondary mt-4 w-full border-red-200 text-red-600 hover:bg-red-50"
-        >
-          Cerrar sesión
-        </button>
+        <section className="mt-5 grid grid-cols-3 gap-2 rounded-[1.4rem] bg-ink p-3 text-white">
+          <div className="text-center">
+            <p className="text-2xl font-black leading-none">{rides.length}</p>
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/55">Viajes</p>
+          </div>
+          <div className="border-x border-white/10 text-center">
+            <p className="text-2xl font-black leading-none text-ruta-500">{rating}</p>
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/55">Calificación</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-black leading-none">{completed}</p>
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/55">Completados</p>
+          </div>
+        </section>
+
+        <section className="mt-4 overflow-hidden rounded-[1.4rem] border border-line bg-white shadow-[0_2px_10px_rgba(11,11,11,0.04)]">
+          <div className="divide-y divide-line">
+            <Row icon={icons.trips} label="Mis viajes" href="/dashboard" />
+            {user.rol !== 'DRIVER' && (
+              <Row icon={icons.heart} label="Mis favoritos" href="/favorites" />
+            )}
+            <Row
+              icon={icons.card}
+              label="Métodos de pago"
+              hint="Efectivo · Pago móvil"
+            />
+            <Row
+              icon={icons.bell}
+              label="Notificaciones"
+              hint="En la cabecera"
+            />
+            <a
+              href="mailto:soporte@rutarides.com"
+              className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-fog/60"
+            >
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-fog text-ink">
+                {icons.help}
+              </span>
+              <span className="flex-1 text-[15px] font-bold">Ayuda y soporte</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-muted">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+          </div>
+        </section>
+
+        <section className="mt-4 overflow-hidden rounded-[1.4rem] border border-line bg-white">
+          <Row icon={icons.exit} label="Cerrar sesión" onClick={handleLogout} danger />
+        </section>
+
+        <p className="mt-6 text-center text-[11px] text-muted">
+          RUTA RIDES · Quíbor, Lara
+        </p>
       </main>
 
       <BottomNav role={user.rol} />

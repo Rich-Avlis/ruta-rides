@@ -7,12 +7,37 @@ import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome } from '@/lib/session';
+import { UrbanScene } from '@/components/brand/UrbanScene';
 
-const guarantees = [
-  { title: 'GPS real', text: 'Origen y destino exactos' },
-  { title: 'Tarifa clara', text: 'Precio antes de salir' },
-  { title: 'Conductor', text: 'Verificado en la app' },
-];
+const promises = [
+  { label: 'Seguro', icon: 'shield' },
+  { label: 'Rápido', icon: 'bolt' },
+  { label: 'En tu ciudad', icon: 'pin' },
+] as const;
+
+function PromiseIcon({ name }: { name: (typeof promises)[number]['icon'] }) {
+  if (name === 'shield') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3l7 3v6c0 4.4-3 8-7 9-4-1-7-4.6-7-9V6l7-3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  if (name === 'bolt') {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  );
+}
 
 export default function HomePage() {
   const { user, loading } = useAuth();
@@ -27,127 +52,76 @@ export default function HomePage() {
   return (
     <main
       id="contenido"
-      className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-white"
+      className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-ink text-white"
     >
+      <UrbanScene className="pointer-events-none absolute inset-x-0 top-0 h-[68%] w-full" />
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[52vh] bg-[radial-gradient(120%_90%_at_50%_0%,#FFF1E6_0%,#FFFFFF_72%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[68%] bg-gradient-to-b from-ink/70 via-ink/10 to-ink"
         aria-hidden="true"
       />
-      <svg
-        className="pointer-events-none absolute -right-10 top-24 h-72 w-72 text-line"
-        viewBox="0 0 200 200"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d="M20 170 C 60 140, 40 96, 84 78 S 140 60, 150 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeDasharray="6 8"
-        />
-        <circle cx="20" cy="170" r="5" fill="#FD7624" />
-        <circle cx="150" cy="24" r="7" fill="none" stroke="#FD7624" strokeWidth="2" />
-      </svg>
 
-      <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-6 pt-[max(1.75rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+      <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.75rem,env(safe-area-inset-top))]">
         <header className="flex items-center justify-between">
           <Image
-            src="/brand/ruta-logo-black.png"
+            src="/brand/ruta-logo-orange.png"
             alt="RUTA RIDES"
             width={2872}
             height={1380}
             priority
-            style={{ height: 34, width: 'auto' }}
+            style={{ height: 54, width: 'auto' }}
           />
-          <span className="rounded-full border border-line bg-white/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-muted">
+          <span className="rounded-full border border-white/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
             Quíbor
           </span>
         </header>
 
-        <section className="mt-14">
-          <p className="text-[11px] font-black uppercase tracking-[0.24em] text-ruta-600">
-            Muévete a tu manera
+        <div className="mt-auto pt-24">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-ruta-500">
+            Movilidad urbana
           </p>
-          <h1 className="mt-3 text-[2.7rem] font-black leading-[0.95] tracking-[-0.03em] text-ink">
-            Tu viaje,
+          <h1 className="mt-3 text-[2.9rem] font-black leading-[0.92] tracking-[-0.04em]">
+            Muévete fácil,
             <br />
-            sin vueltas.
+            muévete <span className="text-ruta-500">mejor.</span>
           </h1>
-          <p className="mt-4 max-w-[19rem] text-[15px] leading-relaxed text-muted">
-            Pide tu viaje en Quíbor, conoce la tarifa antes de salir y sigue a tu
-            conductor en el mapa.
+          <p className="mt-4 max-w-[19rem] text-sm leading-relaxed text-white/60">
+            Pide tu viaje en Quíbor, conoce la tarifa antes de salir y sigue
+            cada tramo en el mapa.
           </p>
-        </section>
 
-        <div className="mt-8 grid grid-cols-3 gap-2">
-          {guarantees.map((item) => (
-            <div
-              key={item.title}
-              className="rounded-2xl border border-line bg-white/70 px-3 py-3"
+          <div className="mt-8 space-y-3">
+            <Link
+              href="/register?role=PASSENGER"
+              className="btn-primary w-full justify-between px-5"
             >
-              <p className="text-[11px] font-black uppercase tracking-wide text-ink">
-                {item.title}
-              </p>
-              <p className="mt-1 text-[10.5px] leading-snug text-muted">{item.text}</p>
+              <span>Soy pasajero</span>
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link
+              href="/register?role=DRIVER"
+              className="flex min-h-[52px] w-full items-center justify-between rounded-2xl border border-white/25 bg-white/5 px-5 text-sm font-extrabold text-white backdrop-blur transition-colors hover:border-white/50"
+            >
+              <span>Soy conductor</span>
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+
+          <p className="mt-4 text-center text-[12px] text-white/50">
+            ¿Ya tienes cuenta?{' '}
+            <Link href="/login" className="font-bold text-white underline decoration-ruta-500 decoration-2 underline-offset-4">
+              Inicia sesión
+            </Link>
+          </p>
+        </div>
+
+        <footer className="mt-8 grid grid-cols-3 gap-2 border-t border-white/10 pt-4">
+          {promises.map((item) => (
+            <div key={item.label} className="flex flex-col items-center gap-1.5 text-white/60">
+              <PromiseIcon name={item.icon} />
+              <span className="text-[11px] font-semibold">{item.label}</span>
             </div>
           ))}
-        </div>
-
-        <div className="mt-7">
-          <div className="relative h-[min(36vh,360px)] overflow-hidden rounded-[1.75rem] border border-line bg-ink">
-            <svg
-              className="absolute inset-0 h-full w-full"
-              viewBox="0 0 360 260"
-              fill="none"
-              aria-hidden="true"
-            >
-              <g stroke="#2A2A2A" strokeWidth="1">
-                <path d="M-10 40 H370" />
-                <path d="M-10 96 H370" />
-                <path d="M-10 150 H370" />
-                <path d="M-10 208 H370" />
-                <path d="M48 -10 V270" />
-                <path d="M112 -10 V270" />
-                <path d="M182 -10 V270" />
-                <path d="M250 -10 V270" />
-                <path d="M312 -10 V270" />
-              </g>
-              <path
-                d="M54 212 C 96 200, 96 150, 138 138 S 196 120, 210 82 S 246 44, 292 44"
-                stroke="#FD7624"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeDasharray="1 9"
-              />
-              <circle cx="54" cy="212" r="7" fill="#FD7624" />
-              <circle cx="54" cy="212" r="13" stroke="#FD7624" strokeOpacity="0.35" strokeWidth="3" />
-              <circle cx="292" cy="44" r="8" fill="#0B0B0B" stroke="#FD7624" strokeWidth="3" />
-            </svg>
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/85 to-transparent p-4 pt-10">
-              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/45">
-                Ruta en vivo
-              </p>
-              <p className="mt-1 text-sm font-bold text-white">
-                Quíbor · tarifa antes de salir
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-auto space-y-3 pt-6">
-          <Link href="/start" className="btn-primary w-full">
-            Comenzar
-          </Link>
-          <Link
-            href="/login"
-            className="btn-secondary w-full border-ink/15 text-ink"
-          >
-            Ya tengo cuenta
-          </Link>
-          <p className="pt-1 text-center text-[11px] leading-relaxed text-muted">
-            Al continuar aceptas el uso de tu ubicación para calcular el viaje.
-          </p>
-        </div>
+        </footer>
       </div>
     </main>
   );

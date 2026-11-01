@@ -468,6 +468,42 @@
     background: var(--color-ruta-500);
   }
 
+  .bottom-nav--five .bottom-nav-inner {
+    align-items: end;
+  }
+
+  .bottom-nav-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 0.3rem;
+    transform: translateY(-14px);
+  }
+
+  .bottom-nav-center::before {
+    display: none !important;
+  }
+
+  .bottom-nav-center__button {
+    display: inline-flex;
+    height: 54px;
+    width: 54px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--color-ruta-500);
+    color: var(--color-ink);
+    border: 5px solid #ffffff;
+    box-shadow: 0 10px 24px rgba(253, 118, 36, 0.4);
+  }
+
+  .bottom-nav-center[aria-current="page"] .bottom-nav-center__button {
+    background: var(--color-ink);
+    color: var(--color-ruta-500);
+    border-color: #ffffff;
+  }
+
   /* ---------- Accesibilidad ---------- */
   .skip-link {
     position: absolute;
