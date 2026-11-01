@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import RequireAuth from '@/components/RequireAuth';
 import BottomNav from '@/components/ui/BottomNav';
+import CityBackdrop from '@/components/brand/CityBackdrop';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import type { Ride } from '@/lib/types';
@@ -135,7 +136,7 @@ function ProfileContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-40">
+    <div className="flex min-h-screen flex-col bg-white pb-40">
       <header className="sticky top-0 z-40 border-b border-line bg-white/92 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-md items-center justify-between px-4">
           <h1 className="text-base font-black tracking-tight">Mi perfil</h1>
@@ -145,7 +146,7 @@ function ProfileContent() {
         </div>
       </header>
 
-      <main id="contenido" className="mx-auto max-w-md px-4 py-6">
+      <main id="contenido" className="mx-auto w-full max-w-md flex-1 px-4 py-6">
         <section className="flex items-center gap-4">
           <span className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-ink text-xl font-black text-white">
             {user.foto ? (
@@ -210,9 +211,11 @@ function ProfileContent() {
         </section>
 
         <p className="mt-6 text-center text-[11px] text-muted">
-          RUTA RIDES · Quíbor, Lara
+          RUTA RIDES · Lara, Venezuela
         </p>
       </main>
+
+      <CityBackdrop tone="light" opacity={0.35} className="mt-auto" />
 
       <BottomNav role={user.rol} />
     </div>

@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome } from '@/lib/session';
-import CitySkyline from '@/components/brand/CitySkyline';
+import CityBackdrop from '@/components/brand/CityBackdrop';
 
 const promises = [
   { label: 'Seguro', icon: 'shield' },
@@ -62,7 +62,7 @@ export default function HomePage() {
         className="pointer-events-none absolute inset-x-0 top-0 h-[58%] bg-gradient-to-b from-ink/40 via-ink/60 to-ink"
         aria-hidden="true"
       />
-      <CitySkyline className="pointer-events-none absolute inset-x-0 bottom-0 h-[44%] w-full object-cover object-bottom opacity-[0.34] invert" />
+      <CityBackdrop tone="dark" opacity={0.32} className="absolute inset-x-0 bottom-0" />
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink via-ink/40 to-transparent"
         aria-hidden="true"
@@ -79,7 +79,7 @@ export default function HomePage() {
             className="h-[54px] w-auto"
           />
           <span className="rounded-full border border-white/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
-            Quíbor
+            Lara
           </span>
         </header>
 
@@ -93,7 +93,7 @@ export default function HomePage() {
             tu <span className="text-ruta-500">ruta.</span>
           </h1>
           <p className="mt-4 max-w-[19rem] text-sm leading-relaxed text-white/60">
-            Pide tu viaje en Quíbor, conoce la tarifa antes de salir y sigue
+            Pide tu viaje en Lara, conoce la tarifa antes de salir y sigue
             cada tramo en el mapa.
           </p>
 

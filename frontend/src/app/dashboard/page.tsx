@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import BottomNav from '@/components/ui/BottomNav';
+import CityBackdrop from '@/components/brand/CityBackdrop';
 import RequireAuth, { FullScreenLoader } from '@/components/RequireAuth';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
@@ -63,10 +64,10 @@ function DashboardContent() {
   const isAdminUser = user.rol === 'ADMIN' || user.rol === 'SUPER_ADMIN';
 
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="flex min-h-screen flex-col bg-canvas">
       <Header />
 
-      <main id="contenido" className="mx-auto max-w-6xl px-4 py-8 pb-24">
+      <main id="contenido" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 pb-24">
         <div className="mb-8">
           <span className="brutal-label">{ROLE_INTRO[user.rol] ?? 'Panel'}</span>
           <h1 className="mt-3 text-3xl font-black leading-none tracking-tight md:text-4xl">
@@ -180,6 +181,8 @@ function DashboardContent() {
           )}
         </section>
       </main>
+
+      <CityBackdrop tone="light" opacity={0.3} className="mt-auto" />
 
       <BottomNav role={user.rol} />
     </div>

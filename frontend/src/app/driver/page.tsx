@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import BottomNav from '@/components/ui/BottomNav';
+import CityBackdrop from '@/components/brand/CityBackdrop';
 import RequireAuth, { FullScreenLoader } from '@/components/RequireAuth';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from '@/contexts/LocationContext';
@@ -279,7 +280,7 @@ function DriverContent() {
 
           {!online && (
             <p className="mt-3 rounded-xl bg-fog p-3 text-xs font-semibold text-muted">
-              Activa tu disponibilidad para recibir viajes en Quíbor.
+              Activa tu disponibilidad para recibir viajes en Lara.
             </p>
           )}
 
@@ -366,6 +367,8 @@ function DriverContent() {
         <p className="mt-4 pb-2 text-center text-[11px] text-white/35">
           Compartir ubicación solo mientras estás en línea.
         </p>
+
+        <CityBackdrop tone="dark" opacity={0.16} className="mt-2" />
       </main>
 
       <BottomNav role="DRIVER" />

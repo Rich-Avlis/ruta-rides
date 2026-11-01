@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import RutaLogo from '@/components/RutaLogo';
-import CitySkyline from '@/components/brand/CitySkyline';
+import CityBackdrop from '@/components/brand/CityBackdrop';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome, safeNextPath } from '@/lib/session';
 
@@ -148,7 +148,7 @@ function LoginForm() {
           </Link>
         </p>
 
-        <CitySkyline className="pointer-events-none mt-6 h-24 w-full object-cover object-bottom opacity-30" />
+        <CityBackdrop tone="light" opacity={0.4} className="mt-6" />
       </div>
     </main>
   );

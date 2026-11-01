@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import RequireAuth from '@/components/RequireAuth';
 import BottomNav from '@/components/ui/BottomNav';
 import PlaceSearch from '@/components/places/PlaceSearch';
-import CitySkyline from '@/components/brand/CitySkyline';
+import CityBackdrop from '@/components/brand/CityBackdrop';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/errors';
@@ -312,7 +312,7 @@ function FavoritesContent() {
       </main>
 
       <div className="pointer-events-none mx-auto mt-auto w-full max-w-md">
-        <CitySkyline className="h-32 w-full object-cover object-bottom opacity-80" />
+        <CityBackdrop tone="light" opacity={0.45} />
       </div>
 
       <BottomNav role={user.rol} />

@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import RutaLogo from '@/components/RutaLogo';
-import CitySkyline from '@/components/brand/CitySkyline';
+import CityBackdrop from '@/components/brand/CityBackdrop';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome } from '@/lib/session';
 import type { RegisterPayload } from '@/lib/types';
@@ -24,7 +24,7 @@ function RegisterForm() {
   const [formData, setFormData] = useState<RegisterFormState>({
     nombre: '',
     apellido: '',
-    telefono: '',
+    telefono: '+58',
     email: '',
     password: '',
     confirmPassword: '',
@@ -46,10 +46,23 @@ function RegisterForm() {
     }
   }, [sessionLoading, user, router]);
 
+  const UPPERCASE_FIELDS = ['marcaVehiculo', 'modeloVehiculo', 'colorVehiculo', 'placaVehiculo'];
+  const PHONE_PREFIX = '+58';
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setFormData((current) => ({ ...current, [event.target.name]: event.target.value }));
+    const { name, value } = event.target;
+
+    if (name === 'telefono') {
+      let digits = value.replace(/\D/g, '');
+      if (digits.startsWith('58')) digits = digits.slice(2);
+      setFormData((current) => ({ ...current, telefono: `${PHONE_PREFIX}${digits.slice(0, 10)}` }));
+      return;
+    }
+
+    const nextValue = UPPERCASE_FIELDS.includes(name) ? value.toUpperCase() : value;
+    setFormData((current) => ({ ...current, [name]: nextValue }));
   };
 
   const setRole = (rol: AccountRole) => {
@@ -197,6 +210,7 @@ function RegisterForm() {
                 placeholder="+584121234567"
                 autoComplete="tel"
                 inputMode="tel"
+                maxLength={13}
                 required
               />
             </div>
@@ -289,7 +303,8 @@ function RegisterForm() {
                       name="marcaVehiculo"
                       value={formData.marcaVehiculo}
                       onChange={handleChange}
-                      className="input-field"
+                      className="input-field uppercase"
+                      autoCapitalize="characters"
                       placeholder="Honda"
                       required
                     />
@@ -304,7 +319,8 @@ function RegisterForm() {
                       name="modeloVehiculo"
                       value={formData.modeloVehiculo}
                       onChange={handleChange}
-                      className="input-field"
+                      className="input-field uppercase"
+                      autoCapitalize="characters"
                       placeholder="XR 150"
                       required
                     />
@@ -322,7 +338,8 @@ function RegisterForm() {
                       name="colorVehiculo"
                       value={formData.colorVehiculo}
                       onChange={handleChange}
-                      className="input-field"
+                      className="input-field uppercase"
+                      autoCapitalize="characters"
                       placeholder="Negro"
                       required
                     />
@@ -369,7 +386,7 @@ function RegisterForm() {
           </Link>
         </p>
 
-        <CitySkyline className="pointer-events-none mt-6 h-24 w-full object-cover object-bottom opacity-30" />
+        <CityBackdrop tone="light" opacity={0.4} className="mt-6" />
       </div>
     </main>
   );

@@ -392,7 +392,7 @@ function AdminContent() {
         <section className="mt-8" aria-labelledby="places-title">
           <span className="brutal-label">Lugares</span>
           <h2 id="places-title" className="mt-3 text-xl font-black">
-            Catálogo de Quíbor
+            Catálogo local
           </h2>
 
           <form onSubmit={createPlace} className="card mt-4 p-4">
