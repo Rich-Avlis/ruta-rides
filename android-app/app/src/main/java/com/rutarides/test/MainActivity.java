@@ -1,19 +1,27 @@
 package com.rutarides.test;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.text.InputType;
-import android.view.Gravity;
-import android.view.ViewGroup;
+import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.GeolocationPermissions;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -22,15 +30,24 @@ public class MainActivity extends Activity {
     private static final String PREFS = "ruta_rides";
     private static final String KEY_URL = "server_url";
     private static final String DEFAULT_URL = "https://ruta-rides.vercel.app";
+    private static final String API_HEALTH = "https://ruta-rides-api.onrender.com/health";
+    private static final int REQUEST_LOCATION = 1001;
+    private static final int REQUEST_FILE = 1002;
 
     private SharedPreferences prefs;
-    private TextView status;
+    private WebView webView;
+    private View splash;
+    private LinearLayout errorView;
+    private ValueCallback<Uri[]> fileCallback;
+    private String pendingGeoOrigin;
+    private GeolocationPermissions.Callback pendingGeoCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        setContentView(R.layout.activity_main);
 
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         if (prefs.getInt("config_version", 0) < 3) {
             prefs.edit()
                     .putString(KEY_URL, DEFAULT_URL)
@@ -38,174 +55,235 @@ public class MainActivity extends Activity {
                     .apply();
         }
 
+        webView = findViewById(R.id.webView);
+        splash = findViewById(R.id.splash);
+        errorView = findViewById(R.id.errorView);
+
+        Button retry = findViewById(R.id.retryButton);
+        retry.setOnClickListener(v -> {
+            errorView.setVisibility(View.GONE);
+            splash.setVisibility(View.VISIBLE);
+            webView.setVisibility(View.VISIBLE);
+            webView.reload();
+        });
+
+        configureWebView();
+        requestLocationPermission();
+        warmUpBackend();
+        webView.loadUrl(serverUrl());
+    }
+
+    /** Despierta el backend gratuito de Render mientras carga la interfaz. */
+    private void warmUpBackend() {
+        new Thread(() -> {
+            try {
+                HttpURLConnection connection = (HttpURLConnection) new URL(API_HEALTH).openConnection();
+                connection.setConnectTimeout(25000);
+                connection.setReadTimeout(25000);
+                connection.setRequestMethod("GET");
+                connection.getResponseCode();
+                connection.disconnect();
+            } catch (Exception ignored) {
+                // Si falla, la app muestra su pantalla de reintento.
+            }
+        }).start();
+    }
+
+    private String serverUrl() {
         String intentUrl = getIntent().getStringExtra("server_url");
         if (intentUrl != null && !intentUrl.isEmpty()) {
             prefs.edit().putString(KEY_URL, intentUrl).apply();
         }
-
-        showStartScreen();
+        String url = prefs.getString(KEY_URL, DEFAULT_URL);
+        return url == null || url.isEmpty() ? DEFAULT_URL : url;
     }
 
-    private void showStartScreen() {
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setGravity(Gravity.CENTER);
-        layout.setPadding(64, 64, 64, 64);
-        layout.setBackgroundColor(Color.rgb(243, 243, 240));
+    @SuppressLint("SetJavaScriptEnabled")
+    private void configureWebView() {
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        settings.setGeolocationEnabled(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        settings.setSupportZoom(false);
+        settings.setBuiltInZoomControls(false);
+        settings.setMediaPlaybackRequiresUserGesture(false);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
 
-        TextView title = new TextView(this);
-        title.setText("RUTA RIDES");
-        title.setTextSize(34);
-        title.setTextColor(Color.rgb(11, 11, 11));
-        title.setGravity(Gravity.CENTER);
-        layout.addView(title);
+        CookieManager cookies = CookieManager.getInstance();
+        cookies.setAcceptCookie(true);
+        cookies.setAcceptThirdPartyCookies(webView, true);
 
-        TextView subtitle = new TextView(this);
-        subtitle.setText("Aplicación oficial");
-        subtitle.setTextSize(14);
-        subtitle.setTextColor(Color.rgb(95, 95, 95));
-        subtitle.setGravity(Gravity.CENTER);
-        subtitle.setPadding(0, 0, 0, 32);
-        layout.addView(subtitle);
-
-        status = new TextView(this);
-        status.setText("Servidor:\n" + prefs.getString(KEY_URL, DEFAULT_URL));
-        status.setTextSize(13);
-        status.setTextColor(Color.rgb(95, 95, 95));
-        status.setGravity(Gravity.CENTER);
-        status.setPadding(0, 0, 0, 24);
-        layout.addView(status);
-
-        Button open = new Button(this);
-        open.setText("Abrir RUTA RIDES");
-        open.setAllCaps(false);
-        open.setOnClickListener(v -> openInBrowser(prefs.getString(KEY_URL, DEFAULT_URL)));
-        layout.addView(open, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-
-        Button change = new Button(this);
-        change.setText("Cambiar servidor");
-        change.setAllCaps(false);
-        change.setOnClickListener(v -> showServerDialog(null));
-        layout.addView(change, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-
-        TextView help = new TextView(this);
-        help.setText("Se abrirá en el navegador del teléfono.\n"
-                + "Necesitas conexión a internet.\n"
-                + "La ubicación GPS requiere HTTPS; si no está disponible, "
-                + "fija el origen tocando el mapa.");
-        help.setTextSize(11);
-        help.setTextColor(Color.rgb(95, 95, 95));
-        help.setGravity(Gravity.CENTER);
-        help.setPadding(0, 32, 0, 0);
-        layout.addView(help);
-
-        setContentView(layout);
-    }
-
-    private void openInBrowser(String url) {
-        status.setText("Probando " + url + "…");
-
-        new Thread(() -> {
-            String failure = null;
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
-                connection.setRequestMethod("HEAD");
-                int code = connection.getResponseCode();
-                connection.disconnect();
-
-                if (code >= 400) {
-                    failure = "HTTP " + code;
-                }
-            } catch (Exception error) {
-                failure = error.getMessage() != null ? error.getMessage() : "sin conexión";
+        webView.setBackgroundColor(0xFFFFFFFF);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                return handleUrl(request.getUrl());
             }
 
-            final String finalFailure = failure;
-            runOnUiThread(() -> {
-                if (finalFailure == null) {
-                    launchBrowser(url);
-                } else {
-                    status.setText("No se pudo conectar con el servidor.\nRevisa tu conexión a internet.");
-                    showServerDialog("Error: " + finalFailure);
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                errorView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                splash.setVisibility(View.GONE);
+                webView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request.isForMainFrame()) {
+                    showError();
                 }
-            });
-        }).start();
+            }
+        });
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                if (hasLocationPermission()) {
+                    callback.invoke(origin, true, false);
+                    return;
+                }
+                pendingGeoOrigin = origin;
+                pendingGeoCallback = callback;
+                requestLocationPermission();
+            }
+
+            @Override
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+                if (fileCallback != null) {
+                    fileCallback.onReceiveValue(null);
+                }
+                fileCallback = callback;
+                try {
+                    Intent intent = params.createIntent();
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(intent, REQUEST_FILE);
+                    return true;
+                } catch (Exception error) {
+                    fileCallback = null;
+                    return false;
+                }
+            }
+        });
     }
 
-    private void launchBrowser(String url) {
+    private boolean handleUrl(Uri uri) {
+        if (uri == null) {
+            return false;
+        }
+        String scheme = uri.getScheme() == null ? "" : uri.getScheme();
+        String host = uri.getHost() == null ? "" : uri.getHost();
+        String baseHost = Uri.parse(serverUrl()).getHost();
+
+        boolean internal = ("https".equals(scheme) || "http".equals(scheme))
+                && baseHost != null
+                && (host.equals(baseHost) || host.endsWith("." + baseHost));
+        if (internal) {
+            return false;
+        }
+
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } catch (Exception error) {
-            showServerDialog("No hay navegador disponible");
+            startActivity(new Intent(Intent.ACTION_VIEW, uri));
+        } catch (Exception ignored) {
+            // Sin app disponible para el enlace.
+        }
+        return true;
+    }
+
+    private void showError() {
+        splash.setVisibility(View.GONE);
+        webView.setVisibility(View.GONE);
+        errorView.setVisibility(View.VISIBLE);
+    }
+
+    private boolean hasLocationPermission() {
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestLocationPermission() {
+        if (hasLocationPermission()) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            }, REQUEST_LOCATION);
         }
     }
 
-    private void showServerDialog(String message) {
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(48, 24, 48, 0);
-
-        if (message != null) {
-            TextView error = new TextView(this);
-            error.setText(message);
-            error.setTextColor(0xFFB84A0C);
-            error.setPadding(0, 0, 0, 16);
-            layout.addView(error);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_LOCATION && pendingGeoCallback != null) {
+            boolean granted = grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            pendingGeoCallback.invoke(pendingGeoOrigin, granted, false);
+            pendingGeoCallback = null;
+            pendingGeoOrigin = null;
         }
+    }
 
-        TextView label = new TextView(this);
-        label.setText("URL del servidor RUTA RIDES");
-        label.setPadding(0, 0, 0, 8);
-        layout.addView(label);
-
-        EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
-        input.setHint(DEFAULT_URL);
-        input.setText(prefs.getString(KEY_URL, DEFAULT_URL));
-        input.setSingleLine(true);
-        layout.addView(input, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-
-        Button emulator = new Button(this);
-        emulator.setText("Usar emulador (10.0.2.2)");
-        emulator.setAllCaps(false);
-        emulator.setOnClickListener(v -> input.setText("http://10.0.2.2:3200"));
-        layout.addView(emulator);
-
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("RUTA RIDES")
-                .setView(layout)
-                .setPositiveButton("Guardar", null)
-                .setNegativeButton("Cancelar", null)
-                .create();
-
-        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setOnClickListener(v -> {
-                    String url = input.getText().toString().trim();
-                    if (url.isEmpty()) {
-                        url = DEFAULT_URL;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_FILE && fileCallback != null) {
+            Uri[] result = null;
+            if (resultCode == RESULT_OK && data != null) {
+                if (data.getClipData() != null) {
+                    int count = data.getClipData().getItemCount();
+                    result = new Uri[count];
+                    for (int i = 0; i < count; i++) {
+                        result[i] = data.getClipData().getItemAt(i).getUri();
                     }
-                    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                        url = "http://" + url;
-                    }
-                    prefs.edit().putString(KEY_URL, url).apply();
-                    status.setText("Servidor:\n" + url);
-                    dialog.dismiss();
-                }));
+                } else if (data.getData() != null) {
+                    result = new Uri[]{data.getData()};
+                }
+            }
+            fileCallback.onReceiveValue(result);
+            fileCallback = null;
+        }
+    }
 
-        dialog.show();
+    @Override
+    public void onBackPressed() {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onPause() {
+        if (webView != null) {
+            webView.onPause();
+        }
+        CookieManager.getInstance().flush();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) {
+            webView.onResume();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            webView.destroy();
+        }
+        super.onDestroy();
     }
 }

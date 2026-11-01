@@ -11,7 +11,12 @@ import {
 } from 'react';
 import api, { AUTH_UNAUTHORIZED_EVENT } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/errors';
-import { clearStoredSession, persistSession, readStoredToken } from '@/lib/session';
+import {
+  clearStoredSession,
+  persistSession,
+  readStoredToken,
+  readStoredUser,
+} from '@/lib/session';
 import { closeSocket } from '@/lib/socket';
 import type {
   LoginResponse,
@@ -76,16 +81,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
+      // Sesión optimista: el usuario guardado entra al instante y la
+      // validación real ocurre en segundo plano. Evita una pantalla en blanco
+      // cuando el backend tarda en despertar.
+      const cachedUser = readStoredUser();
+      if (cachedUser && active) {
+        setToken(storedToken);
+        setUser(cachedUser);
+        setLoading(false);
+      }
+
       try {
         const { data } = await api.get<ProfileResponse>('/api/auth/profile');
         if (!active) return;
         applySession(storedToken, data.user, data.profile ?? null);
-      } catch {
+      } catch (error) {
         if (!active) return;
-        clearStoredSession();
-        setToken(null);
-        setUser(null);
-        setProfile(null);
+        const status =
+          typeof error === 'object' && error !== null && 'response' in error
+            ? (error as { response?: { status?: number } }).response?.status
+            : undefined;
+        // Solo se cierra la sesión si el servidor la rechaza. Un fallo de red
+        // o un backend dormido no debe expulsar al usuario.
+        if (status === 401 || !cachedUser) {
+          clearStoredSession();
+          setToken(null);
+          setUser(null);
+          setProfile(null);
+        }
       } finally {
         if (active) setLoading(false);
       }
