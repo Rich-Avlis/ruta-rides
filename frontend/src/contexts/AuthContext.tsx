@@ -91,6 +91,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
 
+      // Evita bloqueo indefinido cuando el backend gratuito está despertando.
+      const fallback = window.setTimeout(() => {
+        if (active) setLoading(false);
+      }, 8000);
+
       try {
         const { data } = await api.get<ProfileResponse>('/api/auth/profile');
         if (!active) return;
@@ -103,13 +108,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             : undefined;
         // Solo se cierra la sesión si el servidor la rechaza. Un fallo de red
         // o un backend dormido no debe expulsar al usuario.
-        if (status === 401 || !cachedUser) {
+        if (status === 401) {
           clearStoredSession();
           setToken(null);
           setUser(null);
           setProfile(null);
         }
       } finally {
+        window.clearTimeout(fallback);
         if (active) setLoading(false);
       }
     };
