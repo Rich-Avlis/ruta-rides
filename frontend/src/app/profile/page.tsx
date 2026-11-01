@@ -135,7 +135,7 @@ function ProfileContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-28">
+    <div className="min-h-screen bg-white pb-40">
       <header className="sticky top-0 z-40 border-b border-line bg-white/92 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-md items-center justify-between px-4">
           <h1 className="text-base font-black tracking-tight">Mi perfil</h1>
@@ -189,11 +189,6 @@ function ProfileContent() {
               icon={icons.card}
               label="Métodos de pago"
               hint="Efectivo · Pago móvil"
-            />
-            <Row
-              icon={icons.bell}
-              label="Notificaciones"
-              hint="En la cabecera"
             />
             <a
               href="mailto:soporte@rutarides.com"

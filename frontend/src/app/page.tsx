@@ -56,7 +56,7 @@ export default function HomePage() {
     >
       <UrbanScene className="pointer-events-none absolute inset-x-0 top-0 h-[68%] w-full" />
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[68%] bg-gradient-to-b from-ink/70 via-ink/10 to-ink"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[68%] bg-gradient-to-b from-ink/55 via-ink/45 to-ink"
         aria-hidden="true"
       />
 

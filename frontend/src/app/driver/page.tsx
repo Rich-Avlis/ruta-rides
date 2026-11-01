@@ -180,7 +180,7 @@ function DriverContent() {
   }
 
   return (
-    <div className="min-h-screen bg-ink pb-28 text-white">
+    <div className="min-h-screen bg-ink pb-36 text-white">
       <header className="px-5 pb-14 pt-[max(1.5rem,env(safe-area-inset-top))]">
         <div className="mx-auto max-w-md">
           <div className="flex items-start justify-between gap-3">

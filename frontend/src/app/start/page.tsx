@@ -53,7 +53,7 @@ export default function StartPage() {
       id="contenido"
       className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-white"
     >
-      <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-36 pt-[max(2rem,env(safe-area-inset-top))]">
+      <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-8 pt-[max(2rem,env(safe-area-inset-top))]">
         <Link
           href="/"
           className="flex w-fit items-center gap-2 text-xs font-bold text-muted transition-colors hover:text-ink"
@@ -126,9 +126,9 @@ export default function StartPage() {
         </p>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0">
-        <div className="h-14 bg-ruta-500" />
-        <SkylineStrip className="h-24 w-full" />
+      <div className="pointer-events-none relative mt-2 w-full">
+        <SkylineStrip className="h-20 w-full" />
+        <div className="h-5 bg-ruta-500" />
       </div>
     </main>
   );

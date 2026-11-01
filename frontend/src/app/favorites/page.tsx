@@ -154,7 +154,7 @@ function FavoritesContent() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-white pb-28">
+    <div className="flex min-h-screen flex-col bg-white pb-40">
       <header className="sticky top-0 z-40 border-b border-line bg-white/92 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-md items-center gap-3 px-4">
           <button
@@ -174,7 +174,7 @@ function FavoritesContent() {
         </div>
       </header>
 
-      <main id="contenido" className="mx-auto max-w-md px-4 py-5">
+      <main id="contenido" className="mx-auto w-full max-w-md flex-1 px-4 py-5">
         <div className="flex gap-2 overflow-x-auto pb-1">
           {FILTERS.map((item) => (
             <button
@@ -311,7 +311,7 @@ function FavoritesContent() {
         )}
       </main>
 
-      <div className="pointer-events-none mx-auto max-w-md px-4 opacity-90">
+      <div className="pointer-events-none mx-auto mt-auto w-full max-w-md px-4 opacity-90">
         <SkylineStrip className="h-16 w-full" />
       </div>
 

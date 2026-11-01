@@ -384,7 +384,7 @@ function PassengerContent() {
           <button
             type="button"
             onClick={requestLocation}
-            className="absolute bottom-4 right-3 z-20 inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-2.5 text-xs font-black uppercase tracking-wide text-ink shadow-card hover:bg-ruta-50"
+            className="absolute bottom-10 right-3 z-20 inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-2.5 text-xs font-black uppercase tracking-wide text-ink shadow-card hover:bg-ruta-50"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
@@ -412,7 +412,7 @@ function PassengerContent() {
           )}
         </div>
 
-        <aside className="relative z-10 -mt-6 flex min-h-0 flex-1 flex-col overflow-y-auto rounded-t-[1.75rem] border-t border-line bg-white p-5 pb-28 shadow-[0_-16px_40px_rgba(11,11,11,0.12)] md:mt-0 md:w-[430px] md:flex-none md:rounded-none md:border-l md:border-t-0 md:pb-28">
+        <aside className="relative z-10 -mt-6 flex min-h-0 flex-1 flex-col overflow-y-auto rounded-t-[1.75rem] border-t border-line bg-white p-5 pb-32 shadow-[0_-16px_40px_rgba(11,11,11,0.12)] md:mt-0 md:w-[430px] md:flex-none md:rounded-none md:border-l md:border-t-0 md:pb-28">
           <h1 className="text-[1.8rem] font-black leading-none tracking-tight">
             ¿Pa&apos; dónde vas?
           </h1>
