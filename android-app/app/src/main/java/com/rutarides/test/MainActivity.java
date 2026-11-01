@@ -31,10 +31,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
-        if (prefs.getInt("config_version", 0) < 2) {
+        if (prefs.getInt("config_version", 0) < 3) {
             prefs.edit()
                     .putString(KEY_URL, DEFAULT_URL)
-                    .putInt("config_version", 2)
+                    .putInt("config_version", 3)
                     .apply();
         }
 
@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
         layout.addView(title);
 
         TextView subtitle = new TextView(this);
-        subtitle.setText("Prueba local");
+        subtitle.setText("Aplicación oficial");
         subtitle.setTextSize(14);
         subtitle.setTextColor(Color.rgb(95, 95, 95));
         subtitle.setGravity(Gravity.CENTER);
@@ -96,8 +96,7 @@ public class MainActivity extends Activity {
 
         TextView help = new TextView(this);
         help.setText("Se abrirá en el navegador del teléfono.\n"
-                + "Teléfono: usa la IP de tu computadora en la misma red.\n"
-                + "Emulador: 10.0.2.2.\n"
+                + "Necesitas conexión a internet.\n"
                 + "La ubicación GPS requiere HTTPS; si no está disponible, "
                 + "fija el origen tocando el mapa.");
         help.setTextSize(11);
@@ -135,7 +134,7 @@ public class MainActivity extends Activity {
                 if (finalFailure == null) {
                     launchBrowser(url);
                 } else {
-                    status.setText("No se pudo conectar con el servidor.\nRevisa la IP y que la app esté encendida.");
+                    status.setText("No se pudo conectar con el servidor.\nRevisa tu conexión a internet.");
                     showServerDialog("Error: " + finalFailure);
                 }
             });
