@@ -14,6 +14,7 @@ const PHOTON_URL = (process.env.GEOCODING_FALLBACK_URL || 'https://photon.komoot
 const LOCATIONIQ_KEY = process.env.LOCATIONIQ_API_KEY || '';
 const GEOAPIFY_KEY = process.env.GEOAPIFY_API_KEY || '';
 const HERE_KEY = process.env.HERE_API_KEY || '';
+const GOOGLE_KEY = process.env.GOOGLE_MAPS_API_KEY || '';
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const CACHE_MAX_ENTRIES = 200;
 
@@ -360,6 +361,36 @@ const searchHere = async ({ query, limit, lat, lng }) => {
     .filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lng));
 };
 
+
+const searchGoogle = async ({ query, limit, lat, lng }) => {
+  if (!GOOGLE_KEY) return [];
+  const params = new URLSearchParams({
+    address: query,
+    key: GOOGLE_KEY,
+    language: 'es',
+    region: 've',
+    components: 'country:VE'
+  });
+  if (Number.isFinite(lat) && Number.isFinite(lng)) {
+    params.set('bounds', `${lat - 0.4},${lng - 0.4}|${lat + 0.4},${lng + 0.4}`);
+  }
+  const raw = await fetchJsonSafe(`https://maps.googleapis.com/maps/api/geocode/json?${params.toString()}`);
+  if (!raw || raw.status === 'ZERO_RESULTS') return [];
+  if (!Array.isArray(raw.results)) return [];
+
+  return raw.results.slice(0, limit).map((item) => {
+    const location = item.geometry?.location || {};
+    return {
+      id: `google:${item.place_id}`,
+      nombre: item.address_components?.[0]?.long_name || item.formatted_address?.split(',')[0] || 'Lugar',
+      direccion: item.formatted_address || '',
+      lat: Number(location.lat),
+      lng: Number(location.lng),
+      tipo: item.types?.[0] || null
+    };
+  }).filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lng));
+};
+
 const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
   assertConfigured();
 
@@ -421,28 +452,39 @@ const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
     return mapped;
   };
 
-  let remoteResults = [];
-  try {
-    remoteResults = await runQuery(trimmed, true);
-    if (remoteResults.length === 0) {
-      remoteResults = await runQuery(trimmed, false);
-    }
-  } catch {
-    // Si el proveedor falla, devolvemos al menos el catálogo local.
-    remoteResults = [];
-  }
-
   const merged = [...localResults];
-
   const pushUnique = (place) => {
     if (merged.length >= safeLimit) return;
     if (!merged.some((item) => isSamePlace(item, place))) merged.push(place);
   };
 
-  for (const remote of remoteResults) pushUnique(remote);
+  // 1) Proveedores de máxima precisión (si hay key).
+  const premiumProviders = [searchGoogle, searchHere, searchLocationIq, searchGeoapify];
+  for (const provider of premiumProviders) {
+    if (merged.length >= safeLimit) break;
+    try {
+      const results = await provider({ query: trimmed, limit: safeLimit, lat, lng });
+      for (const place of results) pushUnique(place);
+    } catch {
+      // Se continúa con el siguiente proveedor.
+    }
+  }
 
-  // Segunda fuente (Photon) para nombres conocidos, comercios y direcciones
-  // que Nominatim no devuelve. Mejora la cobertura tipo mapa comercial.
+  // 2) OpenStreetMap: Nominatim con y sin sesgo geográfico.
+  if (merged.length < safeLimit) {
+    let remoteResults = [];
+    try {
+      remoteResults = await runQuery(trimmed, true);
+      if (remoteResults.length === 0) {
+        remoteResults = await runQuery(trimmed, false);
+      }
+    } catch {
+      remoteResults = [];
+    }
+    for (const remote of remoteResults) pushUnique(remote);
+  }
+
+  // 3) Photon como último respaldo abierto.
   if (merged.length < safeLimit) {
     const photonResults = await searchPhoton({
       query: trimmed,
@@ -451,20 +493,6 @@ const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
       limit: safeLimit
     });
     for (const place of photonResults) pushUnique(place);
-  }
-
-  // Proveedores opcionales (capa gratuita) para máxima precisión.
-  if (merged.length < safeLimit) {
-    const providers = [searchLocationIq, searchGeoapify, searchHere];
-    for (const provider of providers) {
-      if (merged.length >= safeLimit) break;
-      try {
-        const results = await provider({ query: trimmed, limit: safeLimit, lat, lng });
-        for (const place of results) pushUnique(place);
-      } catch {
-        // Se continúa con el siguiente proveedor.
-      }
-    }
   }
 
   if (hasPoint && merged.length > 1) {
