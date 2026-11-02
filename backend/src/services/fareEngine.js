@@ -45,7 +45,7 @@ const getPricingConfig = async () => {
   return {
     currency: values.MONEDA || process.env.MONEDA || 'USD',
     currencySecondary: values.MONEDA_BS || 'VES',
-    nightStartHour: asNumber(values.HORA_INICIO_NOCURNO, 22),
+    nightStartHour: asNumber(values.HORA_INICIO_NOCURNO, 19),
     nightEndHour: asNumber(values.HORA_FIN_NOCURNO, 5),
     nightMultiplier: asNumber(values.MULTIPLICADOR_NOCURNO, 1.5),
     discountPercent: asNumber(values.DESCUENTO_TARIFA, 0),

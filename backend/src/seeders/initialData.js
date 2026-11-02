@@ -11,7 +11,7 @@ const initialConfig = [
   { clave: 'MONEDA', valor: 'USD', categoria: 'PAGO' },
   { clave: 'RADIO_BUSQUEDA_DEFAULT', valor: '5', categoria: 'BUSQUEDA' },
   { clave: 'MULTIPLICADOR_NOCURNO', valor: '1.5', categoria: 'TARIFA' },
-  { clave: 'HORA_INICIO_NOCURNO', valor: '22', categoria: 'TARIFA' },
+  { clave: 'HORA_INICIO_NOCURNO', valor: '19', categoria: 'TARIFA' },
   { clave: 'HORA_FIN_NOCURNO', valor: '5', categoria: 'TARIFA' },
   { clave: 'DESCUENTO_TARIFA', valor: '0', categoria: 'TARIFA' },
   { clave: 'REDONDEO_TARIFA', valor: '0.01', categoria: 'TARIFA' },
