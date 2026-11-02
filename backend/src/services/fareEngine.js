@@ -53,7 +53,7 @@ const getPricingConfig = async () => {
     defaultZoneMultiplier: asNumber(values.MULTIPLICADOR_ZONA_DEFAULT, 1),
     quoteTtlMinutes: asNumber(values.TIEMPO_VIGENCIA_COTIZACION, 15),
     offerTtlSeconds: asNumber(values.TIEMPO_EXPIRACION_OFERTA, 60),
-    negotiationMin: asNumber(values.NEGOCIACION_MIN, 0.5),
+    negotiationMin: asNumber(values.NEGOCIACION_MIN, 0.83),
     negotiationMax: asNumber(values.NEGOCIACION_MAX, 2),
     negotiationLimit: asNumber(values.LIMITE_NEGOCIACIONES, 3)
   };

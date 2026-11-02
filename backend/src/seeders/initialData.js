@@ -21,7 +21,7 @@ const initialConfig = [
   { clave: 'TASA_CAMBIO_BS', valor: '0', categoria: 'PAGO' },
   { clave: 'LIMITE_NEGOCIACIONES', valor: '3', categoria: 'NEGOCIACION' },
   { clave: 'TIEMPO_EXPIRACION_OFERTA', valor: '60', categoria: 'NEGOCIACION' },
-  { clave: 'NEGOCIACION_MIN', valor: '0.5', categoria: 'NEGOCIACION' },
+  { clave: 'NEGOCIACION_MIN', valor: '0.83', categoria: 'NEGOCIACION' },
   { clave: 'NEGOCIACION_MAX', valor: '2', categoria: 'NEGOCIACION' },
   { clave: 'VERIFICACION_DOCUMENTOS_REQUERIDA', valor: 'true', categoria: 'SEGURIDAD' },
   { clave: 'CALIFICACION_MINIMA_CONDUCTOR', valor: '4.0', categoria: 'SEGURIDAD' },
@@ -35,27 +35,27 @@ const initialFares = [
   {
     nombre: 'Tarifa Urbana Quíbor',
     tipo: 'URBANA',
-    tarifaBase: 0.35,
-    precioPorKm: 0.25,
-    precioPorMinuto: 0.05,
+    tarifaBase: 0.42,
+    precioPorKm: 0.30,
+    precioPorMinuto: 0.06,
     tarifaMinima: 1.00,
     multiplicadorNocturno: 1.5
   },
   {
     nombre: 'Tarifa Suburbana',
     tipo: 'SUBURBANA',
-    tarifaBase: 0.50,
-    precioPorKm: 0.17,
-    precioPorMinuto: 0.05,
+    tarifaBase: 0.60,
+    precioPorKm: 0.204,
+    precioPorMinuto: 0.06,
     tarifaMinima: 1.50,
     multiplicadorNocturno: 1.5
   },
   {
     nombre: 'Tarifa Interurbana',
     tipo: 'INTERURBANA',
-    tarifaBase: 0.70,
-    precioPorKm: 0.12,
-    precioPorMinuto: 0.06,
+    tarifaBase: 0.84,
+    precioPorKm: 0.144,
+    precioPorMinuto: 0.072,
     tarifaMinima: 3.00,
     multiplicadorNocturno: 1.5
   }
