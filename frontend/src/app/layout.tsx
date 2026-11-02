@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s · RUTA RIDES",
   },
   description:
-    "Movilidad real en Lara, Venezuela: solicita tu viaje, sigue a tu conductor y muévete a tu manera.",
+    "Solicita tu viaje, sigue a tu conductor en el mapa y muévete a tu manera.",
   applicationName: "RUTA RIDES",
   manifest: "/manifest.webmanifest",
   formatDetection: { telephone: false },

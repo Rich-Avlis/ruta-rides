@@ -72,7 +72,7 @@ export default function StartPage() {
           />
         </div>
 
-        <h1 className="mt-8 text-[2.15rem] font-black leading-[1.02] tracking-[-0.035em] text-ink">
+        <h1 className="animate-fade-up mt-8 text-[2.15rem] font-black leading-[1.02] tracking-[-0.035em] text-ink">
           ¿Cómo quieres
           <br />
           continuar?
@@ -81,7 +81,7 @@ export default function StartPage() {
           Elige tu modo. Puedes cambiar de cuenta cuando quieras.
         </p>
 
-        <div className="mt-7 space-y-4">
+        <div className="animate-fade-up delay-2 mt-7 space-y-4">
           {options.map((option) => (
             <Link
               key={option.href}
@@ -126,9 +126,11 @@ export default function StartPage() {
         </p>
       </div>
 
-      <div className="pointer-events-none relative mt-2 w-full">
-        <CityBackdrop tone="light" opacity={0.6} />
-        <div className="h-4 bg-ruta-500" />
+      <div className="animate-rise pointer-events-none relative mt-2 w-full">
+        <div className="animate-drift">
+          <CityBackdrop tone="light" opacity={0.55} />
+        </div>
+        <div className="h-3 bg-ruta-500" />
       </div>
     </main>
   );

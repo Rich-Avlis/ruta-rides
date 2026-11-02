@@ -574,3 +574,94 @@
     text-wrap: balance;
   }
 }
+
+/* ============================================================
+   Movimiento de marca · RUTA RIDES
+   ============================================================ */
+
+@keyframes ruta-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ruta-rise {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ruta-drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ruta-glow {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(1.08);
+  }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: ruta-fade-up 640ms var(--ease-out-soft) both;
+  }
+
+  .animate-rise {
+    animation: ruta-rise 900ms var(--ease-out-soft) both;
+  }
+
+  .animate-drift {
+    animation: ruta-drift 9s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: ruta-glow 7s ease-in-out infinite;
+  }
+
+  .delay-1 {
+    animation-delay: 90ms;
+  }
+
+  .delay-2 {
+    animation-delay: 180ms;
+  }
+
+  .delay-3 {
+    animation-delay: 280ms;
+  }
+
+  .delay-4 {
+    animation-delay: 380ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-rise,
+  .animate-drift,
+  .animate-glow {
+    animation: none !important;
+  }
+}

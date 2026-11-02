@@ -115,8 +115,14 @@ function RegisterForm() {
   }
 
   return (
-    <main id="contenido" className="min-h-screen bg-canvas px-4 py-8">
-      <div className="mx-auto w-full max-w-md">
+    <main id="contenido" className="relative min-h-screen overflow-hidden bg-canvas px-4 py-8">
+      <div className="animate-rise pointer-events-none fixed inset-x-0 bottom-0 z-0">
+        <div className="animate-drift">
+          <CityBackdrop tone="light" opacity={0.5} />
+        </div>
+      </div>
+
+      <div className="relative z-10 mx-auto w-full max-w-md">
         <div className="mb-6 text-center">
           <RutaLogo size={40} />
         </div>
@@ -386,7 +392,7 @@ function RegisterForm() {
           </Link>
         </p>
 
-        <CityBackdrop tone="light" opacity={0.4} className="mt-6" />
+
       </div>
     </main>
   );

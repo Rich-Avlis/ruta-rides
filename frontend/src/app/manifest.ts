@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'RUTA RIDES — Muévete a tu manera',
     short_name: 'RUTA RIDES',
     description:
-      'Movilidad en Lara, Venezuela: solicita tu viaje, sigue a tu conductor y paga en USD o Bs.',
+      'Solicita tu viaje, sigue a tu conductor en el mapa y paga en USD o Bs.',
     start_url: '/',
     scope: '/',
     display: 'standalone',

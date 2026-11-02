@@ -55,14 +55,18 @@ export default function HomePage() {
       className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-ink text-white"
     >
       <div
-        className="pointer-events-none absolute -right-28 -top-28 h-80 w-80 rounded-full bg-ruta-500/25 blur-3xl"
+        className="animate-glow pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-ruta-500/40 blur-3xl"
         aria-hidden="true"
       />
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-[58%] bg-gradient-to-b from-ink/40 via-ink/60 to-ink"
         aria-hidden="true"
       />
-      <CityBackdrop tone="dark" opacity={0.32} className="absolute inset-x-0 bottom-0" />
+      <div className="animate-rise pointer-events-none absolute inset-x-0 bottom-24">
+        <div className="animate-drift">
+          <CityBackdrop tone="dark" opacity={0.4} />
+        </div>
+      </div>
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink via-ink/40 to-transparent"
         aria-hidden="true"
@@ -78,26 +82,26 @@ export default function HomePage() {
             priority
             className="h-[54px] w-auto"
           />
-          <span className="rounded-full border border-white/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
-            Lara
+          <span className="rounded-full border border-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/55">
+            Ruta
           </span>
         </header>
 
         <div className="mt-auto pt-24">
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-ruta-500">
+          <p className="animate-fade-up text-[10px] font-black uppercase tracking-[0.3em] text-ruta-500">
             Movilidad urbana
           </p>
-          <h1 className="mt-3 text-[2.9rem] font-black leading-[0.92] tracking-[-0.04em]">
+          <h1 className="animate-fade-up delay-1 mt-3 text-[2.9rem] font-black leading-[0.92] tracking-[-0.04em]">
             Tu ciudad,
             <br />
             tu <span className="text-ruta-500">ruta.</span>
           </h1>
-          <p className="mt-4 max-w-[19rem] text-sm leading-relaxed text-white/60">
-            Pide tu viaje en Lara, conoce la tarifa antes de salir y sigue
+          <p className="animate-fade-up delay-2 mt-4 max-w-[19rem] text-sm leading-relaxed text-white/60">
+            Pide tu viaje, conoce la tarifa antes de salir y sigue
             cada tramo en el mapa.
           </p>
 
-          <div className="mt-8 space-y-3">
+          <div className="animate-fade-up delay-3 mt-8 space-y-3">
             <Link
               href="/register?role=PASSENGER"
               className="btn-primary w-full justify-between px-5"
@@ -122,7 +126,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        <footer className="mt-8 grid grid-cols-3 gap-2 border-t border-white/10 pt-4">
+        <footer className="animate-fade-up delay-4 mt-8 grid grid-cols-3 gap-2 border-t border-white/10 pt-4">
           {promises.map((item) => (
             <div key={item.label} className="flex flex-col items-center gap-1.5 text-white/60">
               <PromiseIcon name={item.icon} />

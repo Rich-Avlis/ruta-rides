@@ -211,7 +211,7 @@ function ProfileContent() {
         </section>
 
         <p className="mt-6 text-center text-[11px] text-muted">
-          RUTA RIDES · Lara, Venezuela
+          RUTA RIDES · Venezuela
         </p>
       </main>
 

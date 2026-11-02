@@ -280,7 +280,7 @@ function DriverContent() {
 
           {!online && (
             <p className="mt-3 rounded-xl bg-fog p-3 text-xs font-semibold text-muted">
-              Activa tu disponibilidad para recibir viajes en Lara.
+              Activa tu disponibilidad para empezar a recibir viajes.
             </p>
           )}
 

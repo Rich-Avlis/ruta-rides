@@ -55,6 +55,11 @@ function LoginForm() {
   return (
     <main id="contenido" className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas p-4">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(120%_90%_at_50%_0%,#FFF1E6_0%,rgba(244,244,241,0)_75%)]" aria-hidden="true" />
+      <div className="animate-rise pointer-events-none fixed inset-x-0 bottom-0">
+        <div className="animate-drift">
+          <CityBackdrop tone="light" opacity={0.4} />
+        </div>
+      </div>
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <RutaLogo size={40} />
@@ -148,7 +153,7 @@ function LoginForm() {
           </Link>
         </p>
 
-        <CityBackdrop tone="light" opacity={0.4} className="mt-6" />
+
       </div>
     </main>
   );
