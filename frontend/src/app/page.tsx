@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome } from '@/lib/session';
 import CityBackdrop from '@/components/brand/CityBackdrop';
+import CityMotion from '@/components/brand/CityMotion';
 
 const promises = [
   { label: 'Seguro', icon: 'shield' },
@@ -66,6 +67,7 @@ export default function HomePage() {
         <div className="animate-drift">
           <CityBackdrop tone="dark" opacity={0.34} />
         </div>
+        <CityMotion className="absolute inset-x-0 bottom-0 h-28 w-full" />
       </div>
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink via-ink/40 to-transparent"

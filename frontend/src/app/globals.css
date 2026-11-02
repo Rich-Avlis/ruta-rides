@@ -665,3 +665,92 @@
     animation: none !important;
   }
 }
+
+/* Capa urbana en movimiento */
+@keyframes ruta-dash {
+  to {
+    stroke-dashoffset: -136;
+  }
+}
+
+@keyframes ruta-car {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  88% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(470px);
+    opacity: 0;
+  }
+}
+
+@keyframes ruta-blink {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes ruta-lamp {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@layer utilities {
+  .motion-dash {
+    animation: ruta-dash 3.4s linear infinite;
+  }
+
+  .motion-car {
+    animation: ruta-car 8s linear infinite;
+  }
+
+  .motion-car-2 {
+    animation-duration: 11s;
+    animation-delay: 1.8s;
+  }
+
+  .motion-car-3 {
+    animation-duration: 14s;
+    animation-delay: 3.6s;
+  }
+
+  .motion-blink {
+    animation: ruta-blink 4.2s ease-in-out infinite;
+  }
+
+  .motion-blink-2 {
+    animation-delay: 1.4s;
+  }
+
+  .motion-blink-3 {
+    animation-delay: 2.8s;
+  }
+
+  .motion-lamp {
+    animation: ruta-lamp 6s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-dash,
+  .motion-car,
+  .motion-blink,
+  .motion-lamp {
+    animation: none !important;
+  }
+}

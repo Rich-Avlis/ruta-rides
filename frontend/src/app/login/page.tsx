@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import RutaLogo from '@/components/RutaLogo';
 import CityBackdrop from '@/components/brand/CityBackdrop';
+import CityMotion from '@/components/brand/CityMotion';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome, safeNextPath } from '@/lib/session';
 
@@ -59,6 +60,7 @@ function LoginForm() {
         <div className="animate-drift">
           <CityBackdrop tone="light" opacity={0.4} />
         </div>
+        <CityMotion className="absolute inset-x-0 bottom-0 h-24 w-full" />
       </div>
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">

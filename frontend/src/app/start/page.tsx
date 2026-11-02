@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome } from '@/lib/session';
 import CityBackdrop from '@/components/brand/CityBackdrop';
+import CityMotion from '@/components/brand/CityMotion';
 
 const options = [
   {
@@ -130,6 +131,7 @@ export default function StartPage() {
         <div className="animate-drift">
           <CityBackdrop tone="light" opacity={0.55} />
         </div>
+        <CityMotion className="absolute inset-x-0 bottom-0 h-20 w-full" />
         <div className="h-3 bg-ruta-500" />
       </div>
     </main>

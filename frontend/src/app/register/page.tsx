@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import RutaLogo from '@/components/RutaLogo';
 import CityBackdrop from '@/components/brand/CityBackdrop';
+import CityMotion from '@/components/brand/CityMotion';
 import { FullScreenLoader } from '@/components/RequireAuth';
 import { roleHome } from '@/lib/session';
 import type { RegisterPayload } from '@/lib/types';
@@ -120,6 +121,7 @@ function RegisterForm() {
         <div className="animate-drift">
           <CityBackdrop tone="light" opacity={0.5} />
         </div>
+        <CityMotion className="absolute inset-x-0 bottom-0 h-28 w-full" />
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-md">
