@@ -31,6 +31,7 @@ const FavoritePlace = require('./src/models/FavoritePlace');
 const FareQuote = require('./src/models/FareQuote');
 const LocalPlace = require('./src/models/LocalPlace');
 const AuditLog = require('./src/models/AuditLog');
+const Withdrawal = require('./src/models/Withdrawal');
 
 // Importar rutas
 const authRoutes = require('./src/routes/auth');
@@ -46,6 +47,7 @@ const favoriteRoutes = require('./src/routes/favorites');
 const quoteRoutes = require('./src/routes/quotes');
 const rateRoutes = require('./src/routes/rates');
 const paymentRoutes = require('./src/routes/payments');
+const walletRoutes = require('./src/routes/wallet');
 
 // Asociaciones
 User.hasOne(PassengerProfile, { foreignKey: 'userId', as: 'passengerProfile' });
@@ -123,6 +125,7 @@ app.use('/api/favorites', favoriteRoutes);
 app.use('/api/quotes', quoteRoutes);
 app.use('/api/rates', rateRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/wallet', walletRoutes);
 
 // Ruta principal
 app.get('/', (req, res) => {

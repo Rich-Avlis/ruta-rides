@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import RequireAuth from '@/components/RequireAuth';
 import BottomNav from '@/components/ui/BottomNav';
@@ -56,6 +57,19 @@ function EarningsContent() {
             <p className="text-xs font-semibold text-white/60">{completed.length} completados</p>
           </div>
         </div>
+
+        <Link
+          href="/wallet"
+          className="mt-4 flex items-center justify-between rounded-2xl bg-ink p-4 text-white"
+        >
+          <span>
+            <span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-white/50">
+              Billetera
+            </span>
+            <span className="mt-0.5 block text-sm font-black">Saldo, comisión y retiros</span>
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
 
         <h2 className="mt-7 text-lg font-black">Viajes completados</h2>
         <div className="mt-3 space-y-3">

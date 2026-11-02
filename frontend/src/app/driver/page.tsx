@@ -348,16 +348,22 @@ function DriverContent() {
           <p className="text-xs text-white/50">
             {profile.colorVehiculo} · {profile.placaVehiculo}
           </p>
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 grid grid-cols-3 gap-2">
             <Link
               href="/driver/earnings"
-              className="flex-1 rounded-xl border border-white/15 py-2 text-center text-xs font-bold text-white/80"
+              className="rounded-xl border border-white/15 py-2 text-center text-xs font-bold text-white/80"
             >
               Ingresos
             </Link>
             <Link
+              href="/wallet"
+              className="rounded-xl bg-ruta-500 py-2 text-center text-xs font-black text-ink"
+            >
+              Billetera
+            </Link>
+            <Link
               href="/profile"
-              className="flex-1 rounded-xl border border-white/15 py-2 text-center text-xs font-bold text-white/80"
+              className="rounded-xl border border-white/15 py-2 text-center text-xs font-bold text-white/80"
             >
               Perfil
             </Link>
