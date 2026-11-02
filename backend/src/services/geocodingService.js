@@ -402,7 +402,7 @@ const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
   const safeLimit = Math.min(Math.max(Number(limit) || 8, 1), 10);
 
   // Intersecciones ("avenida 20 con calle 21") se resuelven con OSM/Overpass.
-  if (parseIntersection(trimmed)) {
+  if (parseIntersection(trimmed) && !HERE_KEY && !GOOGLE_KEY) {
     try {
       const intersection = await resolveIntersection({ query: trimmed, lat, lng });
       if (intersection) {
