@@ -412,7 +412,7 @@ function PassengerContent() {
           )}
         </div>
 
-        <aside className="relative z-10 -mt-6 flex min-h-0 flex-1 flex-col overflow-y-auto rounded-t-[1.75rem] border-t border-line bg-white p-5 pb-32 shadow-[0_-16px_40px_rgba(11,11,11,0.12)] md:mt-0 md:w-[430px] md:flex-none md:rounded-none md:border-l md:border-t-0 md:pb-28">
+        <aside className="relative z-10 -mt-6 flex min-h-0 flex-1 flex-col overflow-y-auto rounded-t-[1.75rem] border-t border-line bg-white p-5 pb-44 shadow-[0_-16px_40px_rgba(11,11,11,0.12)] md:mt-0 md:w-[430px] md:flex-none md:rounded-none md:border-l md:border-t-0 md:pb-28">
           <h1 className="text-[1.8rem] font-black leading-none tracking-tight">
             ¿Pa&apos; dónde vas?
           </h1>
