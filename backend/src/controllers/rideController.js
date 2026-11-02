@@ -211,6 +211,7 @@ exports.requestRide = async (req, res) => {
     const recalculated = await estimateFare({
       distanceKm: quote.distanciaKm,
       durationMin: quote.duracionMin,
+      vehiculo: quote.multiplicadores?.vehiculo || 'MOTO',
       origin: { lat: quote.origenLat, lng: quote.origenLng }
     });
 

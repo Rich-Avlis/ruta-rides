@@ -27,7 +27,7 @@ const handleError = (res, error) => {
 
 exports.createQuote = async (req, res) => {
   try {
-    const { origin, destination, stops = [], modalidad = 'SOLO_IDA' } = req.body || {};
+    const { origin, destination, stops = [], modalidad = 'SOLO_IDA', vehiculo = 'MOTO' } = req.body || {};
 
     const route = await getRouteForModality({
       origin,
@@ -39,6 +39,7 @@ exports.createQuote = async (req, res) => {
     const fare = await estimateFare({
       distanceKm: route.distanceKm,
       durationMin: route.durationMin,
+      vehiculo,
       origin
     });
 
@@ -69,7 +70,9 @@ exports.createQuote = async (req, res) => {
       multiplicadores: {
         zona: fare.desglose.multiplicadorZona,
         demanda: fare.desglose.multiplicadorDemanda,
-        nocturno: fare.desglose.multiplicadorNocturno
+        nocturno: fare.desglose.multiplicadorNocturno,
+        vehiculo: String(vehiculo || 'MOTO').toUpperCase(),
+        multiplicadorVehiculo: fare.desglose.multiplicadorVehiculo
       },
       subtotal: fare.desglose.subtotal,
       descuento: fare.desglose.descuento,

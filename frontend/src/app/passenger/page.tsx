@@ -77,6 +77,7 @@ function PassengerContent() {
   const [favoriteError, setFavoriteError] = useState<string | null>(null);
   const [metodoPago, setMetodoPago] = useState<'EFECTIVO' | 'PAGO_MOVIL' | 'BILLETERA'>('EFECTIVO');
   const [walletSaldo, setWalletSaldo] = useState<number | null>(null);
+  const [vehiculo, setVehiculo] = useState<'MOTO' | 'CARRO' | 'CAMIONETA'>('MOTO');
   const [requesting, setRequesting] = useState(false);
 
   const origin = useMemo<Place | null>(() => {
@@ -177,6 +178,7 @@ function PassengerContent() {
               }))
             : [],
         modalidad: modality,
+        vehiculo,
       })
       .then(({ data }) => {
         if (!active) return;
@@ -194,7 +196,7 @@ function PassengerContent() {
     return () => {
       active = false;
     };
-  }, [origin, destination, modality, stops]);
+  }, [origin, destination, modality, stops, vehiculo]);
 
   const resetRoute = () => {
     setRoute(null);
@@ -670,6 +672,29 @@ function PassengerContent() {
                   ))}
                 </ul>
               )}
+            </div>
+          </section>
+
+          <section className="mt-5 border-t border-line pt-4" aria-labelledby="vehicle-title">
+            <h2 id="vehicle-title" className="brutal-label">
+              Vehículo
+            </h2>
+            <div className="mt-2 grid grid-cols-3 gap-2" role="group" aria-label="Tipo de vehículo">
+              {(['MOTO', 'CARRO', 'CAMIONETA'] as const).map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  aria-pressed={vehiculo === option}
+                  onClick={() => setVehiculo(option)}
+                  className={`rounded-2xl border px-2 py-2.5 text-[11px] font-black uppercase tracking-wide transition-colors ${
+                    vehiculo === option
+                      ? 'border-ink bg-ink text-white'
+                      : 'border-line bg-white text-ink'
+                  }`}
+                >
+                  {option === 'MOTO' ? 'Moto' : option === 'CARRO' ? 'Carro' : 'Camioneta'}
+                </button>
+              ))}
             </div>
           </section>
 

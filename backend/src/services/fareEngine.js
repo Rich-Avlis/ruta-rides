@@ -5,6 +5,18 @@ const Zone = require('../models/Zone');
 const { calculateFare, resolveZoneMultiplier } = require('./fareCalculator');
 const { getExchangeRate } = require('./exchangeRateService');
 
+const VEHICLE_MULTIPLIERS = {
+  MOTO: Number(process.env.MULTIPLICADOR_MOTO || 1),
+  CARRO: Number(process.env.MULTIPLICADOR_CARRO || 1.4),
+  CAMIONETA: Number(process.env.MULTIPLICADOR_CAMIONETA || 1.55),
+  VAN: Number(process.env.MULTIPLICADOR_VAN || 1.7)
+};
+
+const normalizeVehicle = (value) => {
+  const key = String(value || 'MOTO').toUpperCase();
+  return VEHICLE_MULTIPLIERS[key] ? key : 'MOTO';
+};
+
 const CONFIG_KEYS = [
   'MONEDA',
   'MONEDA_BS',
@@ -63,6 +75,7 @@ const estimateFare = async ({
   distanceKm,
   durationMin,
   tipo = null,
+  vehiculo = 'MOTO',
   at = new Date(),
   origin = null
 }) => {
@@ -71,6 +84,8 @@ const estimateFare = async ({
 
   // Tabulador automático según la distancia: urbana, suburbana o interurbana.
   // Permite operar igual en Quíbor, Carora, Dabajuro o cualquier ciudad.
+  const resolvedVehicle = normalizeVehicle(vehiculo);
+  const vehicleMultiplier = VEHICLE_MULTIPLIERS[resolvedVehicle];
   const resolvedTipo = tipo || (distance <= 15 ? 'URBANA' : distance <= 60 ? 'SUBURBANA' : 'INTERURBANA');
 
   if (!Number.isFinite(distance) || distance < 0) {
@@ -112,9 +127,16 @@ const estimateFare = async ({
     config: {
       ...config,
       zoneMultiplier,
+      vehicleMultiplier,
       exchangeRate: exchangeRate?.rate ?? 0
     }
   });
 };
 
-module.exports = { estimateFare, getPricingConfig, FareError };
+module.exports = {
+  estimateFare,
+  getPricingConfig,
+  FareError,
+  VEHICLE_MULTIPLIERS,
+  normalizeVehicle
+};

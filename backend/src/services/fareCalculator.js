@@ -110,7 +110,9 @@ const calculateFare = ({
     : 1;
   const demandMultiplier = Number(fare.multiplicadorDemanda ?? 1) || 1;
   const zoneMultiplier = Number(config.zoneMultiplier ?? 1) || 1;
-  const combinedMultiplier = nightMultiplier * demandMultiplier * zoneMultiplier;
+  const vehicleMultiplier = Number(config.vehicleMultiplier ?? 1) || 1;
+  const combinedMultiplier =
+    nightMultiplier * demandMultiplier * zoneMultiplier * vehicleMultiplier;
 
   const grossCents = Math.round(subtotalCents * combinedMultiplier);
   const surchargeCents = grossCents - subtotalCents;
@@ -151,6 +153,7 @@ const calculateFare = ({
       multiplicadorZona: zoneMultiplier,
       multiplicadorDemanda: demandMultiplier,
       multiplicadorNocturno: nightMultiplier,
+      multiplicadorVehiculo: vehicleMultiplier,
       multiplicadorTotal: Math.round(combinedMultiplier * 1000) / 1000,
       horarioNocturno: nightApplies,
       porcentajeDescuento: discountPercent,
