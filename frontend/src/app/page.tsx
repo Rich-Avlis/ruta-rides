@@ -62,9 +62,9 @@ export default function HomePage() {
         className="pointer-events-none absolute inset-x-0 top-0 h-[58%] bg-gradient-to-b from-ink/40 via-ink/60 to-ink"
         aria-hidden="true"
       />
-      <div className="animate-rise pointer-events-none absolute inset-x-0 bottom-24">
+      <div className="animate-rise pointer-events-none absolute inset-x-0 bottom-20">
         <div className="animate-drift">
-          <CityBackdrop tone="dark" opacity={0.4} />
+          <CityBackdrop tone="dark" opacity={0.34} />
         </div>
       </div>
       <div
@@ -82,9 +82,6 @@ export default function HomePage() {
             priority
             className="h-[54px] w-auto"
           />
-          <span className="rounded-full border border-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/55">
-            Ruta
-          </span>
         </header>
 
         <div className="mt-auto pt-24">
