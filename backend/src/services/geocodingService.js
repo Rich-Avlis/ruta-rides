@@ -9,6 +9,7 @@ const BOUNDED = process.env.GEOCODING_BOUNDED === 'true';
 const USER_AGENT =
   process.env.GEOCODING_USER_AGENT || 'RutaRides/0.1 (soporte@rutarides.local)';
 const TIMEOUT_MS = Number(process.env.GEOCODING_TIMEOUT_MS || 8000);
+const PHOTON_URL = (process.env.GEOCODING_FALLBACK_URL || 'https://photon.komoot.io').replace(/\/$/, '');
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const CACHE_MAX_ENTRIES = 200;
 
@@ -195,6 +196,59 @@ const distanceKm = (a, b) => {
   return Math.sqrt(dLat * dLat + dLng * dLng);
 };
 
+const mapPhotonResult = (feature) => {
+  const props = feature?.properties || {};
+  const coords = feature?.geometry?.coordinates;
+  if (!Array.isArray(coords) || coords.length < 2) return null;
+
+  const [lng, lat] = coords.map(Number);
+  if (!isValidCoordinate(lat, -90, 90) || !isValidCoordinate(lng, -180, 180)) return null;
+
+  const parts = [props.name, props.street, props.city, props.state].filter(Boolean);
+  if (parts.length === 0) return null;
+
+  return {
+    id: `photon:${props.osm_type || 'node'}:${props.osm_id || `${lat},${lng}`}`,
+    nombre: props.name || props.street || parts[0],
+    direccion: parts.join(', '),
+    lat,
+    lng,
+    tipo: props.osm_value || props.type || null
+  };
+};
+
+const searchPhoton = async ({ query, lat, lng, limit }) => {
+  const params = new URLSearchParams({
+    q: query,
+    limit: String(limit)
+  });
+  if (Number.isFinite(lat) && Number.isFinite(lng)) {
+    params.set('lat', String(lat));
+    params.set('lon', String(lng));
+    params.set('location_bias_scale', '0.4');
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try {
+    const response = await fetch(`${PHOTON_URL}/api/?${params.toString()}`, {
+      signal: controller.signal,
+      headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' }
+    });
+    if (!response.ok) return [];
+    const raw = await response.json();
+    const features = Array.isArray(raw?.features) ? raw.features : [];
+    return features
+      .filter((feature) => String(feature?.properties?.countrycode || '').toUpperCase() === 'VE')
+      .map(mapPhotonResult)
+      .filter(Boolean);
+  } catch {
+    return [];
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
 const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
   assertConfigured();
 
@@ -255,11 +309,23 @@ const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
 
   const merged = [...localResults];
 
-  for (const remote of remoteResults) {
-    if (merged.length >= safeLimit) break;
-    if (!merged.some((place) => isSamePlace(place, remote))) {
-      merged.push(remote);
-    }
+  const pushUnique = (place) => {
+    if (merged.length >= safeLimit) return;
+    if (!merged.some((item) => isSamePlace(item, place))) merged.push(place);
+  };
+
+  for (const remote of remoteResults) pushUnique(remote);
+
+  // Segunda fuente (Photon) para nombres conocidos, comercios y direcciones
+  // que Nominatim no devuelve. Mejora la cobertura tipo mapa comercial.
+  if (merged.length < safeLimit) {
+    const photonResults = await searchPhoton({
+      query: trimmed,
+      lat,
+      lng,
+      limit: safeLimit
+    });
+    for (const place of photonResults) pushUnique(place);
   }
 
   if (hasPoint && merged.length > 1) {
