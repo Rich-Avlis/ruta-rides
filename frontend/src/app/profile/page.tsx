@@ -188,6 +188,12 @@ function ProfileContent() {
             )}
             <Row
               icon={icons.card}
+              label="Billetera"
+              hint={user.rol === 'DRIVER' ? 'Saldo · retiros' : 'Saldo · recargas'}
+              href="/wallet"
+            />
+            <Row
+              icon={icons.card}
               label="Métodos de pago"
               hint="Efectivo · Pago móvil"
             />

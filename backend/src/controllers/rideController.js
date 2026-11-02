@@ -12,8 +12,9 @@ const { estimateFare, getPricingConfig } = require('../services/fareEngine');
 const { canTransition, ACTIVE_STATES, normalizeRole } = require('../services/rideStateMachine');
 const { getIO } = require('../config/socket');
 const { notify } = require('../services/notificationService');
+const walletService = require('../services/walletService');
 
-const PAYMENT_METHODS = ['EFECTIVO', 'PAGO_MOVIL', 'TARJETA'];
+const PAYMENT_METHODS = ['EFECTIVO', 'PAGO_MOVIL', 'TARJETA', 'BILLETERA'];
 const PASSENGER_FIELDS = ['id', 'nombre', 'apellido', 'foto', 'telefono'];
 const DRIVER_FIELDS = ['id', 'nombre', 'apellido', 'foto', 'telefono'];
 
@@ -220,6 +221,17 @@ exports.requestRide = async (req, res) => {
         totalActual: recalculated.total,
         moneda: recalculated.moneda
       });
+    }
+
+    if (metodoPago === 'BILLETERA') {
+      const saldo = await walletService.confirmedBalance(req.user.id);
+      if (saldo + 0.001 < quote.total) {
+        return res.status(400).json({
+          error: 'insufficient_wallet',
+          message: `Saldo insuficiente. Disponible: $${saldo.toFixed(2)}`,
+          saldo
+        });
+      }
     }
 
     const ride = await sequelize.transaction(async (transaction) => {
@@ -500,6 +512,19 @@ exports.updateRideStatus = async (req, res) => {
           where: { userId: ride.conductorId }
         });
       }
+
+      // Billetera: cobra al pasajero y abona al conductor, o descuenta la
+      // comisión cuando el conductor cobró directo. Idempotente por viaje.
+      if (ride.metodoPago === 'BILLETERA') {
+        const saldo = await walletService.confirmedBalance(ride.pasajeroId);
+        if (saldo + 0.001 < Number(ride.tarifaFinal || 0)) {
+          return res.status(400).json({
+            error: 'insufficient_wallet',
+            message: 'El pasajero no tiene saldo suficiente para pagar con billetera.'
+          });
+        }
+      }
+      await walletService.settleRide(ride);
     }
 
     emitStatus(rideId, estado);

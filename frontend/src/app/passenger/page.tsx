@@ -75,7 +75,8 @@ function PassengerContent() {
   const [favoriteName, setFavoriteName] = useState('');
   const [favoriteSaving, setFavoriteSaving] = useState(false);
   const [favoriteError, setFavoriteError] = useState<string | null>(null);
-  const [metodoPago, setMetodoPago] = useState<'EFECTIVO' | 'PAGO_MOVIL'>('EFECTIVO');
+  const [metodoPago, setMetodoPago] = useState<'EFECTIVO' | 'PAGO_MOVIL' | 'BILLETERA'>('EFECTIVO');
+  const [walletSaldo, setWalletSaldo] = useState<number | null>(null);
   const [requesting, setRequesting] = useState(false);
 
   const origin = useMemo<Place | null>(() => {
@@ -108,6 +109,14 @@ function PassengerContent() {
     let active = true;
 
     api
+      api
+        .get<{ wallet: { saldo: number } }>('/api/wallet')
+        .then(({ data }) => {
+          if (active) setWalletSaldo(data.wallet?.saldo ?? 0);
+        })
+        .catch(() => {});
+
+      api
       .get<{ favorites: FavoritePlace[] }>('/api/favorites')
       .then(({ data }) => {
         if (active) setFavorites(data.favorites ?? []);
@@ -891,12 +900,12 @@ function PassengerContent() {
                     <p className="text-sm text-muted">Sin cotización disponible.</p>
                   )}
 
-                  <div className="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="Método de pago">
+                  <div className="mt-3 grid grid-cols-3 gap-2" role="group" aria-label="Método de pago">
                     <button
                       type="button"
                       aria-pressed={metodoPago === 'EFECTIVO'}
                       onClick={() => setMetodoPago('EFECTIVO')}
-                      className={`border border-line px-2 py-2 text-[11px] font-black uppercase tracking-wide ${
+                      className={`rounded-xl border border-line px-2 py-2 text-[10px] font-black uppercase tracking-wide ${
                         metodoPago === 'EFECTIVO' ? 'bg-ink text-white' : 'bg-white text-ink'
                       }`}
                     >
@@ -906,11 +915,27 @@ function PassengerContent() {
                       type="button"
                       aria-pressed={metodoPago === 'PAGO_MOVIL'}
                       onClick={() => setMetodoPago('PAGO_MOVIL')}
-                      className={`border border-line px-2 py-2 text-[11px] font-black uppercase tracking-wide ${
+                      className={`rounded-xl border border-line px-2 py-2 text-[10px] font-black uppercase tracking-wide ${
                         metodoPago === 'PAGO_MOVIL' ? 'bg-ruta-500 text-ink' : 'bg-white text-ink'
                       }`}
                     >
                       Pago móvil
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={metodoPago === 'BILLETERA'}
+                      onClick={() => setMetodoPago('BILLETERA')}
+                      disabled={walletSaldo !== null && walletSaldo < (quote?.total ?? 0)}
+                      className={`rounded-xl border border-line px-2 py-2 text-[10px] font-black uppercase tracking-wide disabled:opacity-40 ${
+                        metodoPago === 'BILLETERA' ? 'bg-ruta-500 text-ink' : 'bg-white text-ink'
+                      }`}
+                    >
+                      Billetera
+                      {walletSaldo !== null && (
+                        <span className="mt-0.5 block text-[9px] font-bold normal-case tracking-normal text-current/70">
+                          ${walletSaldo.toFixed(2)}
+                        </span>
+                      )}
                     </button>
                   </div>
 
@@ -923,7 +948,7 @@ function PassengerContent() {
                     {requesting ? 'Solicitando…' : 'Confirmar viaje'}
                   </button>
                   <p className="mt-2 text-center text-[10px] font-bold uppercase tracking-wide text-muted">
-                    Pago {metodoPago === 'EFECTIVO' ? 'en efectivo' : 'por pago móvil'}
+                    Pago {metodoPago === 'EFECTIVO' ? 'en efectivo' : metodoPago === 'BILLETERA' ? 'con billetera' : 'por pago móvil'}
                     {quote?.desglose.totalBs
                       ? ` · ${formatBs(quote.desglose.totalBs)}`
                       : ''}
