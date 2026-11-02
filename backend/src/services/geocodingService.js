@@ -5,7 +5,7 @@ const BASE_URL = (process.env.GEOCODING_BASE_URL || 'https://nominatim.openstree
 const API_KEY = process.env.GEOCODING_API_KEY || '';
 const COUNTRY_CODES = process.env.GEOCODING_COUNTRY_CODES || 've';
 const QUIBOR_VIEWBOX = process.env.GEOCODING_VIEWBOX || '-69.68,9.98,-69.56,9.88';
-const BOUNDED = process.env.GEOCODING_BOUNDED !== 'false';
+const BOUNDED = process.env.GEOCODING_BOUNDED === 'true';
 const USER_AGENT =
   process.env.GEOCODING_USER_AGENT || 'RutaRides/0.1 (soporte@rutarides.local)';
 const TIMEOUT_MS = Number(process.env.GEOCODING_TIMEOUT_MS || 8000);
@@ -154,12 +154,19 @@ const scoreLocalPlace = (place, normalizedQuery) => {
   const name = normalizeText(place.nombre);
   const category = normalizeText(place.tipo);
   const address = normalizeText(place.direccion);
+  const haystack = `${name} ${category} ${address}`;
 
   if (name === normalizedQuery) return 100;
   if (name.startsWith(normalizedQuery)) return 90;
   if (name.includes(normalizedQuery)) return 80;
   if (category.includes(normalizedQuery)) return 60;
   if (address.includes(normalizedQuery)) return 40;
+
+  // Coincidencia por palabras: "plaza bolivar" encuentra "Plaza Bolívar de Quíbor".
+  const tokens = normalizedQuery.split(' ').filter((token) => token.length > 2);
+  if (tokens.length > 1 && tokens.every((token) => haystack.includes(token))) {
+    return 35;
+  }
   return 0;
 };
 
@@ -182,7 +189,13 @@ const searchLocalPlaces = async (query, limit) => {
     .map((entry) => entry.place);
 };
 
-const searchPlaces = async ({ query, limit = 6 }) => {
+const distanceKm = (a, b) => {
+  const dLat = (a.lat - b.lat) * 111;
+  const dLng = (a.lng - b.lng) * 111 * Math.cos((b.lat * Math.PI) / 180);
+  return Math.sqrt(dLat * dLat + dLng * dLng);
+};
+
+const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
   assertConfigured();
 
   const trimmed = String(query || '').trim();
@@ -190,34 +203,54 @@ const searchPlaces = async ({ query, limit = 6 }) => {
     throw new GeocodingError('invalid_query', 400, 'La búsqueda debe tener entre 2 y 120 caracteres');
   }
 
-  const safeLimit = Math.min(Math.max(Number(limit) || 6, 1), 10);
+  const safeLimit = Math.min(Math.max(Number(limit) || 8, 1), 10);
   const localResults = await searchLocalPlaces(trimmed, safeLimit);
 
   if (localResults.length >= safeLimit) {
     return localResults;
   }
 
-  const params = new URLSearchParams({
-    q: trimmed,
-    format: 'jsonv2',
-    addressdetails: '1',
-    limit: String(safeLimit),
-    'accept-language': 'es',
-    countrycodes: COUNTRY_CODES,
-    viewbox: QUIBOR_VIEWBOX
-  });
+  // Sesgo geográfico: si conocemos la ubicación del pasajero, priorizamos su
+  // zona; si no, usamos el centro de Quíbor como referencia, sin encerrar la
+  // búsqueda ahí (bounded desactivado). Así aparecen direcciones de todo Lara.
+  const hasPoint = Number.isFinite(lat) && Number.isFinite(lng);
+  const viewbox = hasPoint
+    ? `${lng - 0.6},${lat + 0.6},${lng + 0.6},${lat - 0.6}`
+    : QUIBOR_VIEWBOX;
 
-  if (BOUNDED) {
-    params.set('bounded', '1');
-  }
+  const runQuery = async (text, useViewbox) => {
+    const params = new URLSearchParams({
+      q: text,
+      format: 'jsonv2',
+      addressdetails: '1',
+      limit: String(safeLimit),
+      'accept-language': 'es',
+      countrycodes: COUNTRY_CODES,
+      dedupe: '1'
+    });
 
-  const cacheKey = `search:${params.toString()}`;
-  let remoteResults = readCache(cacheKey);
+    if (useViewbox) params.set('viewbox', viewbox);
+    if (BOUNDED) params.set('bounded', '1');
 
-  if (!remoteResults) {
+    const cacheKey = `search:${params.toString()}`;
+    const cached = readCache(cacheKey);
+    if (cached) return cached;
+
     const raw = await requestJson(`${BASE_URL}/search?${params.toString()}`);
-    remoteResults = Array.isArray(raw) ? raw.map(mapSearchResult).filter(Boolean) : [];
-    writeCache(cacheKey, remoteResults);
+    const mapped = Array.isArray(raw) ? raw.map(mapSearchResult).filter(Boolean) : [];
+    writeCache(cacheKey, mapped);
+    return mapped;
+  };
+
+  let remoteResults = [];
+  try {
+    remoteResults = await runQuery(trimmed, true);
+    if (remoteResults.length === 0) {
+      remoteResults = await runQuery(trimmed, false);
+    }
+  } catch {
+    // Si el proveedor falla, devolvemos al menos el catálogo local.
+    remoteResults = [];
   }
 
   const merged = [...localResults];
@@ -227,6 +260,10 @@ const searchPlaces = async ({ query, limit = 6 }) => {
     if (!merged.some((place) => isSamePlace(place, remote))) {
       merged.push(remote);
     }
+  }
+
+  if (hasPoint && merged.length > 1) {
+    merged.sort((a, b) => distanceKm(a, { lat, lng }) - distanceKm(b, { lat, lng }));
   }
 
   return merged;
