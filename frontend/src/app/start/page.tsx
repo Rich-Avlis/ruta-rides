@@ -65,10 +65,10 @@ export default function StartPage() {
           <Image
             src="/brand/ruta-logo-black.png"
             alt="RUTA RIDES"
-            width={220}
-            height={106}
+            width={260}
+            height={125}
             priority
-            className="h-[52px] w-auto"
+            className="h-[68px] w-auto"
           />
         </div>
 

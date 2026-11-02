@@ -62,7 +62,7 @@ function LoginForm() {
       </div>
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <RutaLogo size={40} />
+          <RutaLogo size={52} />
         </div>
 
         <div className="surface relative p-6 sm:p-8">

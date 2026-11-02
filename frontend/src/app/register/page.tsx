@@ -124,7 +124,7 @@ function RegisterForm() {
 
       <div className="relative z-10 mx-auto w-full max-w-md">
         <div className="mb-6 text-center">
-          <RutaLogo size={40} />
+          <RutaLogo size={52} />
         </div>
 
         <div className="surface p-6 sm:p-8">

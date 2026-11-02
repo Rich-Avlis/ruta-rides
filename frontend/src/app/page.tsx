@@ -74,14 +74,20 @@ export default function HomePage() {
 
       <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.75rem,env(safe-area-inset-top))]">
         <header className="flex items-center justify-between">
-          <Image
-            src="/brand/ruta-logo-orange.png"
-            alt="RUTA RIDES"
-            width={220}
-            height={106}
-            priority
-            className="h-[54px] w-auto"
-          />
+          <span className="relative inline-flex">
+            <span
+              className="pointer-events-none absolute inset-0 -z-10 scale-125 rounded-full bg-ruta-500/25 blur-2xl"
+              aria-hidden="true"
+            />
+            <Image
+              src="/brand/ruta-logo-orange.png"
+              alt="RUTA RIDES"
+              width={260}
+              height={125}
+              priority
+              className="h-[72px] w-auto drop-shadow-[0_6px_24px_rgba(253,118,36,0.35)]"
+            />
+          </span>
         </header>
 
         <div className="mt-auto pt-24">

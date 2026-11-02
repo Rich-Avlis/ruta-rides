@@ -15,6 +15,7 @@ const LOCATIONIQ_KEY = process.env.LOCATIONIQ_API_KEY || '';
 const GEOAPIFY_KEY = process.env.GEOAPIFY_API_KEY || '';
 const HERE_KEY = process.env.HERE_API_KEY || '';
 const GOOGLE_KEY = process.env.GOOGLE_MAPS_API_KEY || '';
+const DEFAULT_BIAS = { lat: 9.9281, lng: -69.6201 }; // Quíbor, Lara
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const CACHE_MAX_ENTRIES = 200;
 
@@ -424,9 +425,9 @@ const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
   // zona; si no, usamos el centro de Quíbor como referencia, sin encerrar la
   // búsqueda ahí (bounded desactivado). Así aparecen direcciones de todo Lara.
   const hasPoint = Number.isFinite(lat) && Number.isFinite(lng);
-  const viewbox = hasPoint
-    ? `${lng - 0.6},${lat + 0.6},${lng + 0.6},${lat - 0.6}`
-    : QUIBOR_VIEWBOX;
+  const biasLat = hasPoint ? lat : DEFAULT_BIAS.lat;
+  const biasLng = hasPoint ? lng : DEFAULT_BIAS.lng;
+  const viewbox = `${biasLng - 0.6},${biasLat + 0.6},${biasLng + 0.6},${biasLat - 0.6}`;
 
   const runQuery = async (text, useViewbox) => {
     const params = new URLSearchParams({
@@ -463,7 +464,12 @@ const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
   for (const provider of premiumProviders) {
     if (merged.length >= safeLimit) break;
     try {
-      const results = await provider({ query: trimmed, limit: safeLimit, lat, lng });
+      const results = await provider({
+        query: trimmed,
+        limit: safeLimit + 4,
+        lat: biasLat,
+        lng: biasLng
+      });
       for (const place of results) pushUnique(place);
     } catch {
       // Se continúa con el siguiente proveedor.
@@ -488,18 +494,29 @@ const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
   if (merged.length < safeLimit) {
     const photonResults = await searchPhoton({
       query: trimmed,
-      lat,
-      lng,
+      lat: biasLat,
+      lng: biasLng,
       limit: safeLimit
     });
     for (const place of photonResults) pushUnique(place);
   }
 
-  if (hasPoint && merged.length > 1) {
-    merged.sort((a, b) => distanceKm(a, { lat, lng }) - distanceKm(b, { lat, lng }));
-  }
+  // Prioridad absoluta para Lara: primero resultados del estado, luego el
+  // resto del país ordenado por cercanía a la ubicación del pasajero.
+  const isLara = (place) => /\blara\b/i.test(`${place.direccion || ''} ${place.nombre || ''}`);
+  const bias = { lat: biasLat, lng: biasLng };
 
-  return merged;
+  merged.sort((a, b) => {
+    const laraA = isLara(a) ? 0 : 1;
+    const laraB = isLara(b) ? 0 : 1;
+    if (laraA !== laraB) return laraA - laraB;
+    return distanceKm(a, bias) - distanceKm(b, bias);
+  });
+
+  const laraResults = merged.filter(isLara);
+  const finalResults = laraResults.length >= 3 ? laraResults : merged;
+
+  return finalResults.slice(0, safeLimit);
 };
 
 const reverseGeocode = async ({ lat, lng }) => {
