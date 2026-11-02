@@ -45,8 +45,8 @@ const initialFares = [
     nombre: 'Tarifa Suburbana',
     tipo: 'SUBURBANA',
     tarifaBase: 0.50,
-    precioPorKm: 0.35,
-    precioPorMinuto: 0.07,
+    precioPorKm: 0.17,
+    precioPorMinuto: 0.05,
     tarifaMinima: 1.50,
     multiplicadorNocturno: 1.5
   },
@@ -54,9 +54,9 @@ const initialFares = [
     nombre: 'Tarifa Interurbana',
     tipo: 'INTERURBANA',
     tarifaBase: 0.70,
-    precioPorKm: 0.50,
-    precioPorMinuto: 0.10,
-    tarifaMinima: 2.00,
+    precioPorKm: 0.20,
+    precioPorMinuto: 0.06,
+    tarifaMinima: 3.00,
     multiplicadorNocturno: 1.5
   }
 ];

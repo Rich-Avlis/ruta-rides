@@ -62,7 +62,7 @@ const getPricingConfig = async () => {
 const estimateFare = async ({
   distanceKm,
   durationMin,
-  tipo = 'URBANA',
+  tipo = null,
   at = new Date(),
   origin = null
 }) => {
