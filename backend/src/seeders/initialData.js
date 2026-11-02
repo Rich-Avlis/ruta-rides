@@ -95,14 +95,35 @@ const seedInitialData = async () => {
     }
     console.log('✅ Configuración inicial creada');
 
-    // Tarifas
+    // Tarifas: se actualizan en cada arranque para que un despliegue no deje
+    // precios viejos en la base.
     for (const fare of initialFares) {
-      await Fare.findOrCreate({
-        where: { tipo: fare.tipo },
-        defaults: fare
-      });
+      const existing = await Fare.findOne({ where: { tipo: fare.tipo } });
+      if (existing) {
+        await existing.update({
+          nombre: fare.nombre,
+          tarifaBase: fare.tarifaBase,
+          precioPorKm: fare.precioPorKm,
+          precioPorMinuto: fare.precioPorMinuto,
+          tarifaMinima: fare.tarifaMinima,
+          multiplicadorNocturno: fare.multiplicadorNocturno,
+          activa: true
+        });
+      } else {
+        await Fare.create(fare);
+      }
     }
-    console.log('✅ Tarifas iniciales creadas');
+    console.log('✅ Tarifas iniciales sincronizadas');
+
+    // Reglas de negocio que deben viajar con el código.
+    for (const [clave, valor] of Object.entries({
+      HORA_INICIO_NOCURNO: '19',
+      NEGOCIACION_MIN: '0.83'
+    })) {
+      const row = await SystemConfig.findOne({ where: { clave } });
+      if (row) await row.update({ valor });
+      else await SystemConfig.create({ clave, valor, categoria: 'TARIFA' });
+    }
 
     // Zonas
     for (const zone of initialZones) {
