@@ -1,4 +1,5 @@
 const LocalPlace = require('../models/LocalPlace');
+const { parseIntersection, resolveIntersection } = require('./intersectionService');
 
 const PROVIDER = (process.env.GEOCODING_PROVIDER || 'osm').toLowerCase();
 const BASE_URL = (process.env.GEOCODING_BASE_URL || 'https://nominatim.openstreetmap.org').replace(/\/$/, '');
@@ -10,6 +11,9 @@ const USER_AGENT =
   process.env.GEOCODING_USER_AGENT || 'RutaRides/0.1 (soporte@rutarides.local)';
 const TIMEOUT_MS = Number(process.env.GEOCODING_TIMEOUT_MS || 8000);
 const PHOTON_URL = (process.env.GEOCODING_FALLBACK_URL || 'https://photon.komoot.io').replace(/\/$/, '');
+const LOCATIONIQ_KEY = process.env.LOCATIONIQ_API_KEY || '';
+const GEOAPIFY_KEY = process.env.GEOAPIFY_API_KEY || '';
+const HERE_KEY = process.env.HERE_API_KEY || '';
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const CACHE_MAX_ENTRIES = 200;
 
@@ -249,6 +253,113 @@ const searchPhoton = async ({ query, lat, lng, limit }) => {
   }
 };
 
+
+/**
+ * Proveedores comerciales opcionales con capa gratuita amplia.
+ * Se activan solo si existe la API key en el entorno.
+ */
+const fetchJsonSafe = async (url) => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' }
+    });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
+const searchLocationIq = async ({ query, limit, lat, lng }) => {
+  if (!LOCATIONIQ_KEY) return [];
+  const params = new URLSearchParams({
+    key: LOCATIONIQ_KEY,
+    q: query,
+    format: 'json',
+    limit: String(limit),
+    addressdetails: '1',
+    countrycodes: COUNTRY_CODES
+  });
+  if (Number.isFinite(lat) && Number.isFinite(lng)) {
+    params.set('viewbox', `${lng - 0.5},${lat + 0.5},${lng + 0.5},${lat - 0.5}`);
+    params.set('bounded', '0');
+  }
+  const raw = await fetchJsonSafe(`https://us1.locationiq.com/v1/search?${params.toString()}`);
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((item) => ({
+      id: `locationiq:${item.osm_type || 'place'}:${item.osm_id || item.place_id}`,
+      nombre: item.display_name?.split(',')[0] || 'Lugar',
+      direccion: item.display_name || '',
+      lat: Number(item.lat),
+      lng: Number(item.lon),
+      tipo: item.type || null
+    }))
+    .filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lng));
+};
+
+const searchGeoapify = async ({ query, limit, lat, lng }) => {
+  if (!GEOAPIFY_KEY) return [];
+  const params = new URLSearchParams({
+    text: query,
+    limit: String(limit),
+    filter: `countrycode:${String(COUNTRY_CODES).toLowerCase()}`,
+    apiKey: GEOAPIFY_KEY,
+    lang: 'es'
+  });
+  if (Number.isFinite(lat) && Number.isFinite(lng)) {
+    params.set('bias', `proximity:${lng},${lat}`);
+  }
+  const raw = await fetchJsonSafe(`https://api.geoapify.com/v1/geocode/search?${params.toString()}`);
+  const features = Array.isArray(raw?.features) ? raw.features : [];
+  return features
+    .map((feature) => {
+      const props = feature.properties || {};
+      const [lngValue, latValue] = feature.geometry?.coordinates || [];
+      if (!Number.isFinite(latValue) || !Number.isFinite(lngValue)) return null;
+      return {
+        id: `geoapify:${props.place_id || `${latValue},${lngValue}`}`,
+        nombre: props.name || props.address_line1 || 'Lugar',
+        direccion: props.formatted || props.address_line1 || '',
+        lat: latValue,
+        lng: lngValue,
+        tipo: props.result_type || null
+      };
+    })
+    .filter(Boolean);
+};
+
+const searchHere = async ({ query, limit, lat, lng }) => {
+  if (!HERE_KEY) return [];
+  const params = new URLSearchParams({
+    q: query,
+    limit: String(limit),
+    apiKey: HERE_KEY,
+    in: 'countryCode:VEN',
+    lang: 'es'
+  });
+  if (Number.isFinite(lat) && Number.isFinite(lng)) {
+    params.set('at', `${lat},${lng}`);
+  }
+  const raw = await fetchJsonSafe(`https://geocode.search.hereapi.com/v1/geocode?${params.toString()}`);
+  const items = Array.isArray(raw?.items) ? raw.items : [];
+  return items
+    .map((item) => ({
+      id: `here:${item.id}`,
+      nombre: item.title || item.address?.label || 'Lugar',
+      direccion: item.address?.label || '',
+      lat: Number(item.position?.lat),
+      lng: Number(item.position?.lng),
+      tipo: item.resultType || null
+    }))
+    .filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lng));
+};
+
 const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
   assertConfigured();
 
@@ -258,6 +369,20 @@ const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
   }
 
   const safeLimit = Math.min(Math.max(Number(limit) || 8, 1), 10);
+
+  // Intersecciones ("avenida 20 con calle 21") se resuelven con OSM/Overpass.
+  if (parseIntersection(trimmed)) {
+    try {
+      const intersection = await resolveIntersection({ query: trimmed, lat, lng });
+      if (intersection) {
+        const localResults = await searchLocalPlaces(trimmed, safeLimit);
+        return [intersection, ...localResults.filter((item) => !isSamePlace(item, intersection))].slice(0, safeLimit);
+      }
+    } catch {
+      // Si Overpass falla, seguimos con el buscador normal.
+    }
+  }
+
   const localResults = await searchLocalPlaces(trimmed, safeLimit);
 
   if (localResults.length >= safeLimit) {
@@ -326,6 +451,20 @@ const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
       limit: safeLimit
     });
     for (const place of photonResults) pushUnique(place);
+  }
+
+  // Proveedores opcionales (capa gratuita) para máxima precisión.
+  if (merged.length < safeLimit) {
+    const providers = [searchLocationIq, searchGeoapify, searchHere];
+    for (const provider of providers) {
+      if (merged.length >= safeLimit) break;
+      try {
+        const results = await provider({ query: trimmed, limit: safeLimit, lat, lng });
+        for (const place of results) pushUnique(place);
+      } catch {
+        // Se continúa con el siguiente proveedor.
+      }
+    }
   }
 
   if (hasPoint && merged.length > 1) {
