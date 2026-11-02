@@ -69,6 +69,10 @@ const estimateFare = async ({
   const distance = Number(distanceKm);
   const duration = Number(durationMin);
 
+  // Tabulador automático según la distancia: urbana, suburbana o interurbana.
+  // Permite operar igual en Quíbor, Carora, Dabajuro o cualquier ciudad.
+  const resolvedTipo = tipo || (distance <= 15 ? 'URBANA' : distance <= 60 ? 'SUBURBANA' : 'INTERURBANA');
+
   if (!Number.isFinite(distance) || distance < 0) {
     throw new FareError('invalid_route_metrics', 400, 'Distancia inválida');
   }
@@ -78,7 +82,7 @@ const estimateFare = async ({
 
   const [fare, config, zones, exchangeRate] = await Promise.all([
     Fare.findOne({
-      where: { tipo, activa: true },
+      where: { tipo: resolvedTipo, activa: true },
       order: [['createdAt', 'ASC']]
     }),
     getPricingConfig(),
@@ -90,7 +94,7 @@ const estimateFare = async ({
     throw new FareError(
       'fare_not_configured',
       503,
-      `No hay tarifa activa para el tipo ${tipo}`
+      `No hay tarifa activa para el tipo ${resolvedTipo}`
     );
   }
 

@@ -342,5 +342,93 @@
     "lat": 9.918642,
     "lng": -69.630884,
     "osmId": "node:4232096890"
+  },
+  {
+    "nombre": "Plaza Bolivar",
+    "categoria": "PLAZA",
+    "direccion": "Plaza Bolivar, El Tocuyo, Parroquia Bolívar, Municipio Morán, Estado Lara, Venezuela",
+    "lat": 9.7843008,
+    "lng": -69.7952725,
+    "osmId": "way:1503509170"
+  },
+  {
+    "nombre": "Hospital Dr. Egidio Montesinos",
+    "categoria": "HOSPITAL",
+    "direccion": "Hospital Dr. Egidio Montesinos, Avenida Fraternidad, El Tocuyo, Parroquia Bolívar, Municipio Morán, Estado Lara, 3018, Venezuela",
+    "lat": 9.7895841,
+    "lng": -69.7926747,
+    "osmId": "node:13754079713"
+  },
+  {
+    "nombre": "Plaza Bolívar",
+    "categoria": "PLAZA",
+    "direccion": "Plaza Bolívar, Sanare, Parroquia Pío Tamayo, Municipio Andrés Eloy Blanco, Estado Lara, Venezuela",
+    "lat": 9.744562,
+    "lng": -69.659588,
+    "osmId": "way:418094271"
+  },
+  {
+    "nombre": "Hospital Jose Maria Bengoa",
+    "categoria": "HOSPITAL",
+    "direccion": "Hospital Jose Maria Bengoa, Avenida Alberto Carnevali, Sanare, Parroquia Pío Tamayo, Municipio Andrés Eloy Blanco, Estado Lara, 3028, Venezuela",
+    "lat": 9.7527826,
+    "lng": -69.6550342,
+    "osmId": "way:417989554"
+  },
+  {
+    "nombre": "Parque Plaza Bolivar",
+    "categoria": "PLAZA",
+    "direccion": "Parque Plaza Bolivar, Carora, Parroquia Trinidad Samuel, Municipio Torres, Estado Lara, Venezuela",
+    "lat": 10.1812931,
+    "lng": -70.0885481,
+    "osmId": "way:670511703"
+  },
+  {
+    "nombre": "Terminal de Pasajeros de Carora",
+    "categoria": "TERMINAL",
+    "direccion": "Terminal de Pasajeros de Carora, 1, Avenida Francisco de Miranda, La Toñona, Carora, Parroquia Trinidad Samuel, Municipio Torres, Estado Lara, 3050, Venezuela",
+    "lat": 10.1521757,
+    "lng": -70.06878,
+    "osmId": "node:12953891901"
+  },
+  {
+    "nombre": "Plaza Bolívar",
+    "categoria": "PLAZA",
+    "direccion": "Plaza Bolívar, Dabajuro, Parroquia Dabajuro, Municipio Dabajuro, Estado Falcón, Venezuela",
+    "lat": 11.0218583,
+    "lng": -70.6772852,
+    "osmId": "way:233445275"
+  },
+  {
+    "nombre": "Hospital José Enrique Zavala ",
+    "categoria": "HOSPITAL",
+    "direccion": "Hospital José Enrique Zavala , R-8, Dabajuro, Parroquia Dabajuro, Municipio Dabajuro, Estado Falcón, 4118, Venezuela",
+    "lat": 11.0259115,
+    "lng": -70.6786624,
+    "osmId": "node:4110357090"
+  },
+  {
+    "nombre": "Terminal de Pasajeros Pariente Marín ",
+    "categoria": "TERMINAL",
+    "direccion": "Terminal de Pasajeros Pariente Marín , Carretera Falcón - Zulia, Dabajuro, Parroquia Dabajuro, Municipio Dabajuro, Estado Falcón, 4118, Venezuela",
+    "lat": 11.0370989,
+    "lng": -70.6760921,
+    "osmId": "node:4110279090"
+  },
+  {
+    "nombre": "Catedral de Barquisimeto",
+    "categoria": "IGLESIA",
+    "direccion": "Catedral de Barquisimeto, Avenida Venezuela, Barrio Ajuro, Barquisimeto, Parroquia Concepción, Municipio Iribarren, Estado Lara, 3001, Venezuela",
+    "lat": 10.073631,
+    "lng": -69.3214309,
+    "osmId": "way:1149573060"
+  },
+  {
+    "nombre": "Terminal de Pasajeros de Barquisimeto",
+    "categoria": "TERMINAL",
+    "direccion": "Terminal de Pasajeros de Barquisimeto, Carrera 24, Barrio Ajuro, Macuto, Barquisimeto, Parroquia Concepción, Municipio Iribarren, Estado Lara, 3001, Venezuela",
+    "lat": 10.0691316,
+    "lng": -69.3340724,
+    "osmId": "way:166555026"
   }
 ]

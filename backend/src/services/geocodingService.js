@@ -501,22 +501,30 @@ const searchPlaces = async ({ query, lat, lng, limit = 8 }) => {
     for (const place of photonResults) pushUnique(place);
   }
 
-  // Prioridad absoluta para Lara: primero resultados del estado, luego el
-  // resto del país ordenado por cercanía a la ubicación del pasajero.
-  const isLara = (place) => /\blara\b/i.test(`${place.direccion || ''} ${place.nombre || ''}`);
+  // Ranking: coincidencia de texto primero, luego cercanía. Así funciona
+  // igual en Lara, Falcón o cualquier estado sin encerrar la búsqueda.
+  const tokens = normalizeText(trimmed).split(' ').filter((token) => token.length > 2);
+  const relevance = (place) => {
+    const name = normalizeText(place.nombre);
+    const address = normalizeText(place.direccion);
+    let score = 0;
+    if (name === normalizeText(trimmed)) score += 8;
+    if (name.startsWith(normalizeText(trimmed))) score += 5;
+    if (tokens.length > 0 && tokens.every((token) => name.includes(token))) score += 4;
+    if (tokens.some((token) => name.includes(token))) score += 2;
+    if (tokens.length > 0 && tokens.every((token) => address.includes(token))) score += 1;
+    return score;
+  };
+
   const bias = { lat: biasLat, lng: biasLng };
 
   merged.sort((a, b) => {
-    const laraA = isLara(a) ? 0 : 1;
-    const laraB = isLara(b) ? 0 : 1;
-    if (laraA !== laraB) return laraA - laraB;
+    const scoreDiff = relevance(b) - relevance(a);
+    if (scoreDiff !== 0) return scoreDiff;
     return distanceKm(a, bias) - distanceKm(b, bias);
   });
 
-  const laraResults = merged.filter(isLara);
-  const finalResults = laraResults.length >= 3 ? laraResults : merged;
-
-  return finalResults.slice(0, safeLimit);
+  return merged.slice(0, safeLimit);
 };
 
 const reverseGeocode = async ({ lat, lng }) => {
