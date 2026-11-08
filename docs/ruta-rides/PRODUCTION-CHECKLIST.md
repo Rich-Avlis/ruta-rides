@@ -50,3 +50,14 @@ Con Postgres sin disco:
 - Monitoreo de `/health`.
 - Alertas de errores (Sentry o similar).
 - Plan de soporte y disputas.
+
+## Estado actual (8 nov 2026)
+- PostgreSQL creado en Render: `ruta-rides-db` (plan free).
+- `DATABASE_URL` configurada en el servicio.
+- Persistencia verificada: un favorito sobrevivió a un reinicio.
+- Cuentas demo recreadas en Postgres: jose@test.com, carlos@test.com.
+
+### Aviso
+La base Postgres gratuita **expira el 8 de diciembre de 2026**. Antes de esa
+fecha hay que pasar a plan pago o migrar a otro proveedor (Neon, Supabase).
+Si expira, se pierde todo el historial.
