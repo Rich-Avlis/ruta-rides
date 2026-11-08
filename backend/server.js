@@ -80,6 +80,9 @@ Payment.belongsTo(Ride, { foreignKey: 'rideId', as: 'ride' });
 Payment.belongsTo(User, { foreignKey: 'usuarioId', as: 'usuario' });
 
 const app = express();
+
+// Render/Vercel envían X-Forwarded-For; sin esto el rate limit falla.
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3001;
 
