@@ -42,6 +42,15 @@ interface PendingEntry {
   createdAt: string;
 }
 
+interface PendingDocument {
+  id: string;
+  conductorId: string;
+  tipo: string;
+  numeroDocumento: string;
+  estado: string;
+  createdAt: string;
+}
+
 interface AdminWithdrawal {
   id: string;
   driverId: string;
@@ -83,6 +92,7 @@ function AdminContent() {
   const [walletEntries, setWalletEntries] = useState<PendingEntry[]>([]);
   const [withdrawals, setWithdrawals] = useState<AdminWithdrawal[]>([]);
   const [walletBusy, setWalletBusy] = useState<string | null>(null);
+  const [pendingDocs, setPendingDocs] = useState<PendingDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingConfig, setSavingConfig] = useState(false);
 
@@ -113,8 +123,12 @@ function AdminContent() {
         .get<{ withdrawals: AdminWithdrawal[] }>('/api/admin/withdrawals')
         .then((response) => response.data.withdrawals ?? [])
         .catch(() => []),
+      api
+        .get<{ documents: PendingDocument[] }>('/api/documents/pending')
+        .then((response) => response.data.documents ?? [])
+        .catch(() => []),
     ])
-      .then(([faresResponse, configResponse, zonesResponse, currentRate, logs, placesData, pendingEntries, withdrawalList]) => {
+      .then(([faresResponse, configResponse, zonesResponse, currentRate, logs, placesData, pendingEntries, withdrawalList, docs]) => {
         if (!active) return;
         setFares(faresResponse.data.fares ?? []);
         setConfig(configResponse.data.configuracion ?? {});
@@ -124,6 +138,7 @@ function AdminContent() {
         setPlaces(placesData);
         setWalletEntries(pendingEntries);
         setWithdrawals(withdrawalList);
+        setPendingDocs(docs);
         setLoading(false);
       })
       .catch((error) => {
@@ -468,6 +483,70 @@ function AdminContent() {
                 </ul>
               )}
             </div>
+          </div>
+        </section>
+
+        <section className="mt-8" aria-labelledby="docs-title">
+          <span className="brutal-label">Verificación</span>
+          <h2 id="docs-title" className="mt-3 text-xl font-black">
+            Documentos pendientes
+          </h2>
+
+          <div className="card mt-4 p-4">
+            {pendingDocs.length === 0 ? (
+              <p className="text-sm text-muted">No hay documentos por revisar.</p>
+            ) : (
+              <ul className="space-y-3">
+                {pendingDocs.map((doc) => (
+                  <li key={doc.id} className="rounded-xl border border-line p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-black">{doc.tipo}</p>
+                        <p className="text-[11px] text-muted">{doc.numeroDocumento}</p>
+                        <p className="text-[10px] text-muted">
+                          {new Date(doc.createdAt).toLocaleString('es-VE')}
+                        </p>
+                      </div>
+                      <div className="flex gap-1.5">
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            try {
+                              await api.put(`/api/documents/${doc.id}/verify`, { estado: 'APROBADO' });
+                              setPendingDocs((list) => list.filter((item) => item.id !== doc.id));
+                              toast.success('Documento aprobado');
+                            } catch {
+                              toast.error('No se pudo aprobar');
+                            }
+                          }}
+                          className="rounded-lg bg-ink px-2.5 py-1.5 text-[10px] font-black uppercase text-white"
+                        >
+                          Aprobar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            try {
+                              await api.put(`/api/documents/${doc.id}/verify`, {
+                                estado: 'RECHAZADO',
+                                observaciones: 'Documento ilegible o vencido'
+                              });
+                              setPendingDocs((list) => list.filter((item) => item.id !== doc.id));
+                              toast.success('Documento rechazado');
+                            } catch {
+                              toast.error('No se pudo rechazar');
+                            }
+                          }}
+                          className="rounded-lg border border-line px-2.5 py-1.5 text-[10px] font-black uppercase text-muted"
+                        >
+                          Rechazar
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </section>
 

@@ -348,7 +348,15 @@ function DriverContent() {
           <p className="text-xs text-white/50">
             {profile.colorVehiculo} · {profile.placaVehiculo}
           </p>
-          <div className="mt-3 grid grid-cols-3 gap-2">
+          <Link
+            href="/driver/documents"
+            className="mt-3 flex items-center justify-between rounded-xl border border-white/15 px-3 py-2 text-xs font-bold text-white/80"
+          >
+            <span>Documentos y verificación</span>
+            <span aria-hidden="true">→</span>
+          </Link>
+
+          <div className="mt-2 grid grid-cols-3 gap-2">
             <Link
               href="/driver/earnings"
               className="rounded-xl border border-white/15 py-2 text-center text-xs font-bold text-white/80"
