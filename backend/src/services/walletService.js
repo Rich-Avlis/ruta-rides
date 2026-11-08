@@ -179,7 +179,7 @@ const settleRide = async (ride) => {
   });
 };
 
-const requestRecharge = async ({ userId, monto, metodo, referencia }) => {
+const requestRecharge = async ({ userId, monto, metodo, referencia, rol = 'PASSENGER' }) => {
   const amount = round2(monto);
   if (!Number.isFinite(amount) || amount < MIN_RECHARGE) {
     return { error: 'invalid_amount', message: `La recarga mínima es de $${MIN_RECHARGE}` };
@@ -190,13 +190,16 @@ const requestRecharge = async ({ userId, monto, metodo, referencia }) => {
 
   const entry = await WalletEntry.create({
     userId,
-    rol: 'PASSENGER',
+    rol: rol === 'DRIVER' ? 'DRIVER' : 'PASSENGER',
     tipo: 'RECARGA',
     monto: amount,
     estado: 'PENDIENTE',
     metodo: metodo || 'PAGO_MOVIL',
     referencia: String(referencia).trim().slice(0, 60),
-    descripcion: 'Recarga por pago móvil (pendiente de verificación)'
+    descripcion:
+      rol === 'DRIVER'
+        ? 'Abono a cuenta por pago móvil (pendiente de verificación)'
+        : 'Recarga por pago móvil (pendiente de verificación)'
   });
 
   return { entry };

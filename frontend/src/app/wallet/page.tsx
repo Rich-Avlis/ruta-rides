@@ -59,6 +59,7 @@ function WalletContent() {
   const [movements, setMovements] = useState<Movement[]>([]);
   const [loading, setLoading] = useState(true);
   const [formOpen, setFormOpen] = useState(false);
+  const [mode, setMode] = useState<'withdraw' | 'recharge'>('withdraw');
   const [monto, setMonto] = useState('');
   const [referencia, setReferencia] = useState('');
   const [metodo, setMetodo] = useState<'PAGO_MOVIL' | 'TRANSFERENCIA'>('PAGO_MOVIL');
@@ -88,7 +89,7 @@ function WalletContent() {
     event.preventDefault();
     setSaving(true);
     try {
-      if (isDriver) {
+      if (isDriver && mode === 'withdraw') {
         await api.post('/api/wallet/withdrawals', { monto: Number(monto), metodo, datos });
         toast.success('Retiro semanal solicitado');
       } else {
@@ -190,7 +191,10 @@ function WalletContent() {
             )}
             <button
               type="button"
-              onClick={() => setFormOpen((open) => !open)}
+              onClick={() => {
+                setMode('withdraw');
+                setFormOpen((open) => !open);
+              }}
               disabled={
                 loading ||
                 (wallet?.saldo ?? 0) < (wallet?.minimoRetiro ?? 5) ||
@@ -203,6 +207,19 @@ function WalletContent() {
                 : (wallet?.saldo ?? 0) < (wallet?.minimoRetiro ?? 5)
                   ? `Retiro mínimo ${formatMoney(wallet?.minimoRetiro ?? 5, 'USD')}`
                   : 'Solicitar retiro semanal'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMode('recharge');
+                setFormOpen(true);
+              }}
+              className="btn-secondary mt-2 w-full"
+            >
+              {wallet && wallet.saldo < 0
+                ? `Abonar y saldar deuda (${formatMoney(Math.abs(wallet.saldo), 'USD')})`
+                : 'Abonar a mi cuenta'}
             </button>
           </>
         ) : (
@@ -230,7 +247,7 @@ function WalletContent() {
               required
             />
 
-            {isDriver ? (
+            {isDriver && mode === 'withdraw' ? (
               <>
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   {(['PAGO_MOVIL', 'TRANSFERENCIA'] as const).map((option) => (
@@ -283,7 +300,13 @@ function WalletContent() {
 
             <div className="mt-3 flex gap-2">
               <button type="submit" disabled={saving} className="btn-primary min-h-0 flex-1 py-2.5 text-sm">
-                {saving ? 'Enviando…' : isDriver ? 'Solicitar retiro' : 'Registrar recarga'}
+                {saving
+                  ? 'Enviando…'
+                  : isDriver && mode === 'withdraw'
+                    ? 'Solicitar retiro'
+                    : isDriver
+                      ? 'Registrar abono'
+                      : 'Registrar recarga'}
               </button>
               <button
                 type="button"

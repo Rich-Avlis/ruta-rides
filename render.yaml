@@ -35,7 +35,14 @@ services:
         value: https://router.project-osrm.org
       - key: EXCHANGE_RATE_URL
         value: https://ve.dolarapi.com/v1/dolares/oficial
-    # Plan gratuito: sin disco. La base SQLite es efímera y se recrea con los
-    # datos iniciales en cada arranque. Para persistir, usar plan starter y:
-    #   env DB_PATH=/var/data/database.sqlite
-    #   disk: name ruta-data, mountPath /var/data, sizeGB 1
+    # PRODUCCIÓN CON DINERO REAL:
+    # 1) Opción A (recomendada): PostgreSQL gestionado.
+    #    - Crear base Postgres y definir DATABASE_URL.
+    #    - El backend detecta DATABASE_URL y usa Postgres automáticamente.
+    # 2) Opción B: plan starter + disco persistente.
+    #    - plan: starter
+    #    - disk: name ruta-data, mountPath /var/data, sizeGB 1
+    #    - env DB_PATH=/var/data/database.sqlite
+    # 3) Exigir documentos aprobados para conectarse:
+    #    - env REQUIRE_DOCS_FOR_ONLINE=true
+    # Sin una de las dos primeras, los datos se pierden al reiniciar.

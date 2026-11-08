@@ -899,6 +899,21 @@ exports.goOnline = async (req, res) => {
       return res.status(404).json({ error: 'Perfil de conductor no encontrado' });
     }
 
+    // En producción se exige documentación aprobada para conectarse.
+    if (process.env.REQUIRE_DOCS_FOR_ONLINE === 'true') {
+      const DriverDocument = require('../models/DriverDocument');
+      const approved = await DriverDocument.count({
+        where: { conductorId: req.user.id, estado: 'APROBADO' }
+      });
+      if (approved < 2) {
+        return res.status(403).json({
+          error: 'documentos_pendientes',
+          message:
+            'Completa la verificación de documentos (cédula y licencia) antes de conectarte.'
+        });
+      }
+    }
+
     await profile.update({ enLinea: true, ubicacionLat: lat, ubicacionLng: lng });
 
     res.json({ message: 'Conectado exitosamente', enLinea: true });

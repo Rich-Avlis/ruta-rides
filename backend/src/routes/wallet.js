@@ -30,7 +30,7 @@ router.get('/movements', async (req, res, next) => {
 
 router.post(
   '/recharge',
-  requireRole('PASSENGER', 'ADMIN', 'SUPER_ADMIN'),
+  requireRole('PASSENGER', 'DRIVER', 'ADMIN', 'SUPER_ADMIN'),
   [
     body('monto').isNumeric().withMessage('Monto inválido'),
     body('referencia').trim().isLength({ min: 4, max: 60 }).withMessage('Referencia inválida')
@@ -46,7 +46,8 @@ router.post(
         userId: req.user.id,
         monto: Number(req.body.monto),
         metodo: req.body.metodo || 'PAGO_MOVIL',
-        referencia: req.body.referencia
+        referencia: req.body.referencia,
+        rol: roleOf(req.user)
       });
 
       if (result.error) return res.status(400).json(result);
