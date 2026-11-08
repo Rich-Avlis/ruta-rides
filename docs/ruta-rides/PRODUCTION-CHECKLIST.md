@@ -61,3 +61,9 @@ Con Postgres sin disco:
 La base Postgres gratuita **expira el 8 de diciembre de 2026**. Antes de esa
 fecha hay que pasar a plan pago o migrar a otro proveedor (Neon, Supabase).
 Si expira, se pierde todo el historial.
+
+## Comprobantes (8 nov 2026)
+- Los comprobantes ahora se guardan en PostgreSQL (`uploaded_files`).
+- Límite: 5 MB, JPG/PNG/WebP.
+- Verificado: comprobante cargado, servicio reiniciado y archivo recuperado intacto.
+- Ya no se pierden al reiniciar aunque no haya disco.
