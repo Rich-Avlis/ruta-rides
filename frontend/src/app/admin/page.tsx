@@ -30,6 +30,28 @@ interface Zone {
   activa: boolean;
 }
 
+interface PendingEntry {
+  id: string;
+  userId: string;
+  rol: string;
+  tipo: string;
+  monto: number;
+  estado: string;
+  metodo: string | null;
+  referencia: string | null;
+  createdAt: string;
+}
+
+interface AdminWithdrawal {
+  id: string;
+  driverId: string;
+  monto: number;
+  metodo: string;
+  datos: string;
+  estado: string;
+  createdAt: string;
+}
+
 interface ExchangeRate {
   rate: number;
   source: string;
@@ -58,6 +80,9 @@ function AdminContent() {
   const [placeSaving, setPlaceSaving] = useState(false);
   const [config, setConfig] = useState<Record<string, string>>({});
   const [rate, setRate] = useState<ExchangeRate | null>(null);
+  const [walletEntries, setWalletEntries] = useState<PendingEntry[]>([]);
+  const [withdrawals, setWithdrawals] = useState<AdminWithdrawal[]>([]);
+  const [walletBusy, setWalletBusy] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [savingConfig, setSavingConfig] = useState(false);
 
@@ -80,8 +105,16 @@ function AdminContent() {
         .get<{ places: LocalPlace[] }>('/api/admin/places')
         .then((response) => response.data.places ?? [])
         .catch(() => []),
+      api
+        .get<{ entries: PendingEntry[] }>('/api/admin/wallet/pending')
+        .then((response) => response.data.entries ?? [])
+        .catch(() => []),
+      api
+        .get<{ withdrawals: AdminWithdrawal[] }>('/api/admin/withdrawals')
+        .then((response) => response.data.withdrawals ?? [])
+        .catch(() => []),
     ])
-      .then(([faresResponse, configResponse, zonesResponse, currentRate, logs, placesData]) => {
+      .then(([faresResponse, configResponse, zonesResponse, currentRate, logs, placesData, pendingEntries, withdrawalList]) => {
         if (!active) return;
         setFares(faresResponse.data.fares ?? []);
         setConfig(configResponse.data.configuracion ?? {});
@@ -89,6 +122,8 @@ function AdminContent() {
         setRate(currentRate);
         setAuditLogs(logs);
         setPlaces(placesData);
+        setWalletEntries(pendingEntries);
+        setWithdrawals(withdrawalList);
         setLoading(false);
       })
       .catch((error) => {
@@ -287,6 +322,153 @@ function AdminContent() {
           >
             {savingConfig ? 'Guardando…' : 'Guardar configuración'}
           </button>
+        </section>
+
+        <section className="mt-8" aria-labelledby="wallet-admin-title">
+          <span className="brutal-label">Dinero</span>
+          <h2 id="wallet-admin-title" className="mt-3 text-xl font-black">
+            Recargas y retiros
+          </h2>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <div className="card p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted">
+                Recargas pendientes
+              </p>
+              {walletEntries.length === 0 ? (
+                <p className="mt-3 text-sm text-muted">Sin recargas por verificar.</p>
+              ) : (
+                <ul className="mt-3 space-y-3">
+                  {walletEntries.map((entry) => (
+                    <li key={entry.id} className="rounded-xl border border-line p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-black">${entry.monto.toFixed(2)}</p>
+                          <p className="text-[11px] text-muted">
+                            {entry.tipo} · ref {entry.referencia || '—'}
+                          </p>
+                          <p className="text-[10px] text-muted">
+                            {new Date(entry.createdAt).toLocaleString('es-VE')}
+                          </p>
+                        </div>
+                        <div className="flex gap-1.5">
+                          <button
+                            type="button"
+                            disabled={walletBusy === entry.id}
+                            onClick={async () => {
+                              setWalletBusy(entry.id);
+                              try {
+                                await api.patch(`/api/admin/wallet/${entry.id}`, { estado: 'CONFIRMADO' });
+                                setWalletEntries((list) => list.filter((item) => item.id !== entry.id));
+                                toast.success('Recarga acreditada');
+                              } catch {
+                                toast.error('No se pudo acreditar');
+                              } finally {
+                                setWalletBusy(null);
+                              }
+                            }}
+                            className="rounded-lg bg-ink px-2.5 py-1.5 text-[10px] font-black uppercase text-white"
+                          >
+                            Aprobar
+                          </button>
+                          <button
+                            type="button"
+                            disabled={walletBusy === entry.id}
+                            onClick={async () => {
+                              setWalletBusy(entry.id);
+                              try {
+                                await api.patch(`/api/admin/wallet/${entry.id}`, { estado: 'RECHAZADO' });
+                                setWalletEntries((list) => list.filter((item) => item.id !== entry.id));
+                                toast.success('Recarga rechazada');
+                              } catch {
+                                toast.error('No se pudo rechazar');
+                              } finally {
+                                setWalletBusy(null);
+                              }
+                            }}
+                            className="rounded-lg border border-line px-2.5 py-1.5 text-[10px] font-black uppercase text-muted"
+                          >
+                            Rechazar
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="card p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted">
+                Retiros
+              </p>
+              {withdrawals.length === 0 ? (
+                <p className="mt-3 text-sm text-muted">Sin retiros solicitados.</p>
+              ) : (
+                <ul className="mt-3 space-y-3">
+                  {withdrawals.map((item) => (
+                    <li key={item.id} className="rounded-xl border border-line p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-black">${item.monto.toFixed(2)}</p>
+                          <p className="text-[11px] text-muted">
+                            {item.metodo === 'PAGO_MOVIL' ? 'Pago móvil' : 'Transferencia'} · {item.datos}
+                          </p>
+                          <p className="text-[10px] uppercase tracking-wide text-muted">
+                            {item.estado} · {new Date(item.createdAt).toLocaleDateString('es-VE')}
+                          </p>
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          {item.estado !== 'PAID' && item.estado !== 'REJECTED' && (
+                            <button
+                              type="button"
+                              disabled={walletBusy === item.id}
+                              onClick={async () => {
+                                setWalletBusy(item.id);
+                                try {
+                                  await api.patch(`/api/admin/withdrawals/${item.id}`, { estado: 'PAID' });
+                                  setWithdrawals((list) => list.map((row) => row.id === item.id ? { ...row, estado: 'PAID' } : row));
+                                  toast.success('Retiro marcado como pagado');
+                                } catch {
+                                  toast.error('No se pudo actualizar');
+                                } finally {
+                                  setWalletBusy(null);
+                                }
+                              }}
+                              className="rounded-lg bg-ruta-500 px-2.5 py-1.5 text-[10px] font-black uppercase text-ink"
+                            >
+                              Pagado
+                            </button>
+                          )}
+                          {item.estado === 'PENDING' && (
+                            <button
+                              type="button"
+                              disabled={walletBusy === item.id}
+                              onClick={async () => {
+                                setWalletBusy(item.id);
+                                try {
+                                  await api.patch(`/api/admin/withdrawals/${item.id}`, { estado: 'REJECTED' });
+                                  setWithdrawals((list) => list.map((row) => row.id === item.id ? { ...row, estado: 'REJECTED' } : row));
+                                  toast.success('Retiro rechazado');
+                                } catch {
+                                  toast.error('No se pudo actualizar');
+                                } finally {
+                                  setWalletBusy(null);
+                                }
+                              }}
+                              className="rounded-lg border border-line px-2.5 py-1.5 text-[10px] font-black uppercase text-muted"
+                            >
+                              Rechazar
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
         </section>
 
         <section className="mt-8" aria-labelledby="fares-title">

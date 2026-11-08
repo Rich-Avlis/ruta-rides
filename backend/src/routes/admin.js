@@ -72,6 +72,21 @@ router.patch('/wallet/:entryId', async (req, res, next) => {
   }
 });
 
+router.get('/withdrawals', async (req, res, next) => {
+  try {
+    const Withdrawal = require('../models/Withdrawal');
+    const where = req.query.estado ? { estado: String(req.query.estado).toUpperCase() } : {};
+    const withdrawals = await Withdrawal.findAll({
+      where,
+      order: [['createdAt', 'DESC']],
+      limit: 100
+    });
+    res.json({ withdrawals });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.patch('/withdrawals/:withdrawalId', async (req, res, next) => {
   try {
     const { estado, nota } = req.body || {};
