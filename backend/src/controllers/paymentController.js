@@ -6,7 +6,7 @@ const Ride = require('../models/Ride');
 const Payment = require('../models/Payment');
 const { normalizeRole } = require('../services/rideStateMachine');
 
-const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
+const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(__dirname, '..', '..', 'uploads');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -124,7 +124,7 @@ exports.getProof = async (req, res) => {
     }
 
     const absolute = path.resolve(path.join(__dirname, '..', '..'), payment.comprobante);
-    const root = path.resolve(path.join(__dirname, '..', '..', 'uploads'));
+    const root = path.resolve(process.env.UPLOAD_DIR || path.join(__dirname, '..', '..', 'uploads'));
 
     if (!absolute.startsWith(root) || !fs.existsSync(absolute)) {
       return res.status(404).json({ error: 'Comprobante no disponible' });
