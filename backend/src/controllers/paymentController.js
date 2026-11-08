@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const multer = require('multer');
 const Ride = require('../models/Ride');
 const Payment = require('../models/Payment');
+const UploadedFile = require('../models/UploadedFile');
 const { normalizeRole } = require('../services/rideStateMachine');
 
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(__dirname, '..', '..', 'uploads');
@@ -12,13 +13,8 @@ fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_SIZE = 5 * 1024 * 1024;
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
-  filename: (req, file, cb) => {
-    const extension = file.mimetype === 'image/png' ? 'png' : file.mimetype === 'image/webp' ? 'webp' : 'jpg';
-    cb(null, `${crypto.randomUUID()}.${extension}`);
-  }
-});
+// En memoria: se guarda en base para sobrevivir reinicios sin disco.
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
@@ -32,9 +28,7 @@ const upload = multer({
   }
 });
 
-const removeFile = (file) => {
-  if (file?.path) fs.unlink(file.path, () => {});
-};
+const removeFile = () => {};
 
 const hasAccess = (ride, user) => {
   const role = normalizeRole(user);
@@ -80,14 +74,22 @@ exports.uploadProof = async (req, res) => {
       return res.status(400).json({ error: 'El pago ya fue confirmado' });
     }
 
-    const relativePath = path.relative(path.join(__dirname, '..', '..'), req.file.path);
+    const stored = await UploadedFile.create({
+      ownerId: req.user.id,
+      mime: req.file.mimetype,
+      size: req.file.size,
+      data: req.file.buffer
+    });
+    const reference = `db:${stored.id}`;
 
     if (payment) {
-      if (payment.comprobante) {
+      if (payment.comprobante?.startsWith('db:')) {
+        await UploadedFile.destroy({ where: { id: payment.comprobante.slice(3) } }).catch(() => {});
+      } else if (payment.comprobante) {
         const previous = path.join(__dirname, '..', '..', payment.comprobante);
         fs.unlink(previous, () => {});
       }
-      await payment.update({ comprobante: relativePath });
+      await payment.update({ comprobante: reference });
     } else {
       await Payment.create({
         rideId: ride.id,
@@ -95,7 +97,7 @@ exports.uploadProof = async (req, res) => {
         monto: ride.tarifaFinal,
         metodo: ride.metodoPago,
         estado: 'PENDIENTE',
-        comprobante: relativePath
+        comprobante: reference
       });
     }
 
@@ -121,6 +123,14 @@ exports.getProof = async (req, res) => {
     const payment = await Payment.findOne({ where: { rideId: ride.id } });
     if (!payment?.comprobante) {
       return res.status(404).json({ error: 'Sin comprobante' });
+    }
+
+    if (payment.comprobante.startsWith('db:')) {
+      const stored = await UploadedFile.findByPk(payment.comprobante.slice(3));
+      if (!stored) return res.status(404).json({ error: 'Comprobante no disponible' });
+      res.setHeader('Content-Type', stored.mime);
+      res.setHeader('Cache-Control', 'private, max-age=300');
+      return res.send(stored.data);
     }
 
     const absolute = path.resolve(path.join(__dirname, '..', '..'), payment.comprobante);
