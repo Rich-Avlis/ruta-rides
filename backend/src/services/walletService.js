@@ -63,7 +63,13 @@ const summarize = async (userId, rol) => {
         .reduce((total, entry) => total + Number(entry.monto || 0), 0)
     );
 
-  const bruto = round2(-sumByType('INGRESO_VIAJE') / (1 - rate || 1));
+  // Bruto real: viajes cobrados por billetera + viajes cobrados en efectivo
+  // (de estos últimos solo se registra la comisión).
+  const ingresoBilletera = sumByType('INGRESO_VIAJE');
+  const comisionEfectivo = Math.abs(sumByType('COMISION_EFECTIVO'));
+  const brutoBilletera = rate < 1 ? ingresoBilletera / (1 - rate) : 0;
+  const brutoEfectivo = rate > 0 ? comisionEfectivo / rate : 0;
+  const bruto = round2(brutoBilletera + brutoEfectivo);
   const retirado = round2(Math.abs(sumByType('RETIRO')));
   const { start, end } = weekRange();
   const retiroEstaSemana = withdrawals.some(
