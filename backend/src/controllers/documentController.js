@@ -83,11 +83,6 @@ exports.getPendingDocuments = async (req, res) => {
   try {
     const documents = await DriverDocument.findAll({
       where: { estado: 'PENDIENTE' },
-      include: [{
-        model: User,
-        as: 'conductor',
-        attributes: ['id', 'nombre', 'apellido', 'email']
-      }],
       order: [['createdAt', 'ASC']]
     });
 
