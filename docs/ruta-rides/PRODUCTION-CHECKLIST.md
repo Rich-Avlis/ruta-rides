@@ -67,3 +67,17 @@ Si expira, se pierde todo el historial.
 - Límite: 5 MB, JPG/PNG/WebP.
 - Verificado: comprobante cargado, servicio reiniciado y archivo recuperado intacto.
 - Ya no se pierden al reiniciar aunque no haya disco.
+
+## Correcciones verificadas (9 nov 2026)
+- HEIC de iPhone se convierte a JPEG al subir comprobante.
+- Referencias de recarga débiles (ej. "AAAA") se rechazan; mínimo 6 caracteres.
+- Requiere cédula y licencia aprobadas para conectarse (`REQUIRE_DOCS_FOR_ONLINE=true`).
+- Conductor verificado entra en línea; conductor sin documentos recibe 403.
+- Socket.IO verificado: el pasajero recibe `DRIVER_EN_ROUTE` en vivo.
+- Pago móvil completo verificado con comprobante y referencia.
+
+### Cuentas actuales
+- Pasajero: jose@test.com / 123456
+- Conductor verificado: conductor@test.com / 123456
+- Admin: admin@rutarides.com / RutaRides2026!
+- carlos@test.com es pasajero (el registro público no crea conductores).
