@@ -33,7 +33,7 @@ router.post(
   requireRole('PASSENGER', 'DRIVER', 'ADMIN', 'SUPER_ADMIN'),
   [
     body('monto').isNumeric().withMessage('Monto inválido'),
-    body('referencia').trim().isLength({ min: 4, max: 60 }).withMessage('Referencia inválida')
+    body('referencia').trim().isLength({ min: 6, max: 40 }).withMessage('Referencia inválida')
   ],
   async (req, res, next) => {
     const errors = validationResult(req);

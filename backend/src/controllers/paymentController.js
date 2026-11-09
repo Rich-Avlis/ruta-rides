@@ -10,7 +10,8 @@ const { normalizeRole } = require('../services/rideStateMachine');
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(__dirname, '..', '..', 'uploads');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+const HEIC_TYPES = ['image/heic', 'image/heif'];
 const MAX_SIZE = 5 * 1024 * 1024;
 
 // En memoria: se guarda en base para sobrevivir reinicios sin disco.
@@ -74,11 +75,28 @@ exports.uploadProof = async (req, res) => {
       return res.status(400).json({ error: 'El pago ya fue confirmado' });
     }
 
+    let buffer = req.file.buffer;
+    let mime = req.file.mimetype;
+
+    // iPhone envía HEIC. Se convierte a JPEG para que se pueda visualizar.
+    if (HEIC_TYPES.includes(mime)) {
+      try {
+        const heicConvert = require('heic-convert');
+        buffer = Buffer.from(await heicConvert({ buffer, format: 'JPEG', quality: 0.85 }));
+        mime = 'image/jpeg';
+      } catch {
+        return res.status(400).json({
+          error: 'invalid_proof',
+          message: 'No se pudo convertir la imagen HEIC. Envía JPG o PNG.'
+        });
+      }
+    }
+
     const stored = await UploadedFile.create({
       ownerId: req.user.id,
-      mime: req.file.mimetype,
-      size: req.file.size,
-      data: req.file.buffer
+      mime,
+      size: buffer.length,
+      data: buffer
     });
     const reference = `db:${stored.id}`;
 

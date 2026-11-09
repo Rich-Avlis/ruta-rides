@@ -184,8 +184,12 @@ const requestRecharge = async ({ userId, monto, metodo, referencia, rol = 'PASSE
   if (!Number.isFinite(amount) || amount < MIN_RECHARGE) {
     return { error: 'invalid_amount', message: `La recarga mínima es de $${MIN_RECHARGE}` };
   }
-  if (!referencia || String(referencia).trim().length < 4) {
-    return { error: 'invalid_reference', message: 'Indica la referencia del pago móvil' };
+  const reference = String(referencia || '').trim();
+  if (!/^[A-Za-z0-9-]{6,40}$/.test(reference) || /^(.)\1+$/.test(reference)) {
+    return {
+      error: 'invalid_reference',
+      message: 'La referencia debe tener entre 6 y 40 caracteres válidos'
+    };
   }
 
   const entry = await WalletEntry.create({
@@ -195,7 +199,7 @@ const requestRecharge = async ({ userId, monto, metodo, referencia, rol = 'PASSE
     monto: amount,
     estado: 'PENDIENTE',
     metodo: metodo || 'PAGO_MOVIL',
-    referencia: String(referencia).trim().slice(0, 60),
+    referencia: reference.slice(0, 60),
     descripcion:
       rol === 'DRIVER'
         ? 'Abono a cuenta por pago móvil (pendiente de verificación)'
