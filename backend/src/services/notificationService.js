@@ -1,5 +1,6 @@
 const Notification = require('../models/Notification');
 const { getIO } = require('../config/socket');
+const { sendPush } = require('./pushService');
 
 /**
  * Crea una notificación persistente y la emite al usuario por Socket.IO.
@@ -21,6 +22,8 @@ const notify = async ({ userId, titulo, mensaje, tipo = 'VIAJE', datos = null })
     } catch {
       // Socket.IO puede no estar inicializado.
     }
+
+    await sendPush({ userId, titulo, mensaje, datos });
 
     return notification;
   } catch (error) {

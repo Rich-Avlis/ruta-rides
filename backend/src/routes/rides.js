@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rideController = require('../controllers/rideController');
+const chatController = require('../controllers/chatController');
 const { authenticateToken, requireRole } = require('../middleware/auth');
 
 // Rutas públicas
@@ -10,6 +11,8 @@ router.get('/nearby', authenticateToken, rideController.findNearbyDrivers);
 router.post('/request', authenticateToken, rideController.requestRide);
 router.get('/my-rides', authenticateToken, rideController.getMyRides);
 router.get('/available', authenticateToken, requireRole('DRIVER'), rideController.getAvailableRides);
+router.get('/:rideId/messages', authenticateToken, chatController.list);
+router.post('/:rideId/messages', authenticateToken, chatController.send);
 router.get('/:rideId/negotiations', authenticateToken, rideController.getNegotiations);
 router.get('/:rideId', authenticateToken, rideController.getRideById);
 router.post('/:rideId/offer', authenticateToken, rideController.makeOffer);

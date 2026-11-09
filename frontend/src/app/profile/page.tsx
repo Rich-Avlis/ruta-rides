@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import RequireAuth from '@/components/RequireAuth';
 import BottomNav from '@/components/ui/BottomNav';
 import CityBackdrop from '@/components/brand/CityBackdrop';
+import PushSetup from '@/components/PushSetup';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import type { Ride } from '@/lib/types';
@@ -192,6 +193,11 @@ function ProfileContent() {
               hint={user.rol === 'DRIVER' ? 'Saldo · retiros' : 'Saldo · recargas'}
               href="/wallet"
             />
+            <div className="border-b border-line">
+              <PushSetup />
+            </div>
+            <Row icon={icons.bell} label="Términos y condiciones" href="/legal/terminos" />
+            <Row icon={icons.help} label="Política de privacidad" href="/legal/privacidad" />
             <Row
               icon={icons.card}
               label="Métodos de pago"

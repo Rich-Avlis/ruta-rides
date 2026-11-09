@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import Header from '@/components/Header';
 import RequireAuth, { FullScreenLoader } from '@/components/RequireAuth';
 import NegotiationPanel from '@/components/ride/NegotiationPanel';
+import RideChat from '@/components/ride/RideChat';
 import CityBackdrop from '@/components/brand/CityBackdrop';
 import PaymentProof from '@/components/ride/PaymentProof';
 import RatingForm from '@/components/ride/RatingForm';
@@ -369,6 +370,10 @@ function RideContent() {
                 )}
               </div>
             </div>
+          </div>
+
+          <div className="mt-3">
+            <RideChat rideId={ride.id} />
           </div>
 
           <div className="mt-3 flex items-center justify-between rounded-2xl border border-line px-3 py-2.5">

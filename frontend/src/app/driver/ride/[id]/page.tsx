@@ -10,6 +10,7 @@ import RequireAuth, { FullScreenLoader } from '@/components/RequireAuth';
 import NegotiationPanel from '@/components/ride/NegotiationPanel';
 import PaymentProof from '@/components/ride/PaymentProof';
 import RatingForm from '@/components/ride/RatingForm';
+import RideChat from '@/components/ride/RideChat';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from '@/contexts/LocationContext';
 import api from '@/lib/api';
@@ -296,6 +297,8 @@ function DriverRideContent() {
                 </p>
               )}
             </div>
+
+            <RideChat rideId={ride.id} />
 
             {ride.metodoPago === 'PAGO_MOVIL' && ride.pago?.comprobante && (
               <PaymentProof rideId={ride.id} hasProof />
